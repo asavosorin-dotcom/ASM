@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/10/26 09:47:58	    Page 1
+Turbo Assembler	 Version 4.1	    02/10/26 10:24:47	    Page 1
 frame.asm
 
 
@@ -8,47 +8,72 @@ frame.asm
       3
       4				     org 100h
       5
-      6				     DRAW macro	length,	pos_x
+      6				     DRAW macro	length,	pos_x, pos_y
       7					     mov bx, length
       8					     mov cx, pos_x
-      9					     shl cx, 1
-     10					     shl bx, 1
-     11					     call draw_string
-     12				     ENDM
-     13
-     14	0100			     Start:
-     15					     ;переход в	сегмент	видеопамяти
-     16	0100  B8 B800			     mov ax, 0B800h
-     17	0103  8E C0			     mov es, ax
-     18					     ;xor bx, bx
-     19
-     20					     DRAW 30, 10
-1    21	0105  BB 001E			     mov bx, 30
-1    22	0108  B9 000A			     mov cx, 10
-1    23	010B  D1 E1			     shl cx, 1
-1    24	010D  D1 E3			     shl bx, 1
-1    25	010F  E8 0004			     call draw_string
-     26
-     27	0112  B4 4C			     mov ah, 4ch
-     28	0114  CD 21			     int 21h
-     29
-     30	0116				     draw_string proc
+      9					     mov di, pos_y
+     10					     call draw_string
+     11				     ENDM
+     12
+     13				     MUL_R macro mlp1, mlp2
+     14					     push ax
+     15					     mov ax, mlp1
+     16					     mul mlp2
+     17					     mov mlp1, ax
+     18					     pop ax
+     19				     ENDM
+     20	0100			     Start:
+     21					     ;переход в	сегмент	видеопамяти
+     22	0100  B8 B800			     mov ax, 0B800h
+     23	0103  8E C0			     mov es, ax
+     24					     ;xor bx, bx
+     25
+     26					     DRAW 30, 10, 0
+1    27	0105  BB 001E			     mov bx, 30
+1    28	0108  B9 000A			     mov cx, 10
+1    29	010B  BF 0000			     mov di, 0
+1    30	010E  E8 0004			     call draw_string
      31
-     32						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
-     33						     ;mov bx, 80 ;счетчик
-     34	0116  03 D9				     add bx, cx
-     35	0118					     string:
-     36	0118  26: C7 87	0280 CE03			     mov word ptr es:[bx + 160*4], (4e03h or 8000h)
-     37	011F  4B					     dec bx
-     38	0120  4B					     dec bx
-     39	0121  3B D9					     cmp bx, cx
-     40	0123  7D F3					     jge string
-     41
-     42	0125  C3				     ret;
-     43	0126				     draw_string endp
-     44
-     45				     end     Start
-Turbo Assembler	 Version 4.1	    02/10/26 09:47:58	    Page 2
+     32	0111  B4 4C			     mov ah, 4ch
+     33	0113  CD 21			     int 21h
+     34
+     35	0115				     draw_string proc
+     36
+     37						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
+     38						     ;mov bx, 80 ;счетчик
+     39
+     40	0115  D1 E1				     shl cx, 1
+     41	0117  D1 E3				     shl bx, 1
+     42
+     43					     ; -1 и умножение на 160=======
+     44	0119  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
+     45	      E7 D1 E7
+     46	0123  53				     push bx
+     47	0124  8B DF				     mov bx, di
+     48	0126  D1 E7 D1 E7			     shl di, 2
+     49	012A  03 FB				     add di, bx
+     50	012C  5B				     pop bx
+     51
+     52					     ;=================================
+     53
+     54	012D  03 D9				     add bx, cx
+     55	012F					     string:
+     56	012F  26: C7 01	CE03				     mov word ptr es:[bx + di],	(4e03h or 8000h)
+     57	0134  4B					     dec bx
+Turbo Assembler	 Version 4.1	    02/10/26 10:24:47	    Page 2
+frame.asm
+
+
+
+     58	0135  4B					     dec bx
+     59	0136  3B D9					     cmp bx, cx
+     60	0138  7D F5					     jge string
+     61
+     62	013A  C3				     ret;
+     63	013B				     draw_string endp
+     64
+     65				     end     Start
+Turbo Assembler	 Version 4.1	    02/10/26 10:24:47	    Page 3
 Symbol Table
 
 
@@ -58,7 +83,7 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/10/26"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "09:47:58"
+??TIME				  Text	 "10:24:46"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @CODE				  Text	 DGROUP
@@ -72,17 +97,18 @@ Symbol Name			  Type	 Value
 @MODEL				  Text	 1
 @STACK				  Text	 DGROUP
 @WORDSIZE			  Text	 2
-DRAW_STRING			  Near	 DGROUP:0116
+DRAW_STRING			  Near	 DGROUP:0115
 START				  Near	 DGROUP:0100
-STRING				  Near	 DGROUP:0118
+STRING				  Near	 DGROUP:012F
 
 Macro Name
 
 DRAW
+MUL_R
 
 Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  0126 Word	  Public  CODE
+  _TEXT				  16  013B Word	  Public  CODE
 
