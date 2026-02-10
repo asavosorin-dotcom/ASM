@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/10/26 10:24:47	    Page 1
+Turbo Assembler	 Version 4.1	    02/10/26 21:24:14	    Page 1
 frame.asm
 
 
@@ -15,65 +15,131 @@ frame.asm
      10					     call draw_string
      11				     ENDM
      12
-     13				     MUL_R macro mlp1, mlp2
-     14					     push ax
-     15					     mov ax, mlp1
-     16					     mul mlp2
-     17					     mov mlp1, ax
-     18					     pop ax
-     19				     ENDM
-     20	0100			     Start:
-     21					     ;переход в	сегмент	видеопамяти
-     22	0100  B8 B800			     mov ax, 0B800h
-     23	0103  8E C0			     mov es, ax
-     24					     ;xor bx, bx
-     25
-     26					     DRAW 30, 10, 0
-1    27	0105  BB 001E			     mov bx, 30
-1    28	0108  B9 000A			     mov cx, 10
-1    29	010B  BF 0000			     mov di, 0
-1    30	010E  E8 0004			     call draw_string
+     13				     DRAW_COL macro height, pos_x, pos_y
+     14					     mov bx, height
+     15					     mov cx, pos_x
+     16					     mov di, pos_y
+     17					     call draw_column
+     18				     ENDM
+     19
+     20				     MUL_R macro mlp1, mlp2
+     21					     push ax
+     22					     mov ax, mlp1
+     23					     mul mlp2
+     24					     mov mlp1, ax
+     25					     pop ax
+     26				     ENDM
+     27	0100			     Start:
+     28					     ;переход в	сегмент	видеопамяти
+     29	0100  B8 B800			     mov ax, 0B800h
+     30	0103  8E C0			     mov es, ax
      31
-     32	0111  B4 4C			     mov ah, 4ch
-     33	0113  CD 21			     int 21h
-     34
-     35	0115				     draw_string proc
-     36
-     37						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
-     38						     ;mov bx, 80 ;счетчик
-     39
-     40	0115  D1 E1				     shl cx, 1
-     41	0117  D1 E3				     shl bx, 1
+     32					     DRAW     30, 10, 5
+1    33	0105  BB 001E			     mov bx, 30
+1    34	0108  B9 000A			     mov cx, 10
+1    35	010B  BF 0005			     mov di, 5
+1    36	010E  E8 0028			     call draw_string
+     37					     DRAW_COL 5,  10, 5
+1    38	0111  BB 0005			     mov bx, 5
+1    39	0114  B9 000A			     mov cx, 10
+1    40	0117  BF 0005			     mov di, 5
+1    41	011A  E8 0040			     call draw_column
      42
-     43					     ; -1 и умножение на 160=======
-     44	0119  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
-     45	      E7 D1 E7
-     46	0123  53				     push bx
-     47	0124  8B DF				     mov bx, di
-     48	0126  D1 E7 D1 E7			     shl di, 2
-     49	012A  03 FB				     add di, bx
-     50	012C  5B				     pop bx
-     51
-     52					     ;=================================
+     43					     DRAW     30, 10, 10
+1    44	011D  BB 001E			     mov bx, 30
+1    45	0120  B9 000A			     mov cx, 10
+1    46	0123  BF 000A			     mov di, 10
+1    47	0126  E8 0010			     call draw_string
+     48					     DRAW_COL 5,  40, 5
+1    49	0129  BB 0005			     mov bx, 5
+1    50	012C  B9 0028			     mov cx, 40
+1    51	012F  BF 0005			     mov di, 5
+1    52	0132  E8 0028			     call draw_column
      53
-     54	012D  03 D9				     add bx, cx
-     55	012F					     string:
-     56	012F  26: C7 01	CE03				     mov word ptr es:[bx + di],	(4e03h or 8000h)
-     57	0134  4B					     dec bx
-Turbo Assembler	 Version 4.1	    02/10/26 10:24:47	    Page 2
+     54	0135  B4 4C			     mov ah, 4ch
+     55	0137  CD 21			     int 21h
+     56
+     57	0139				     draw_string proc
+Turbo Assembler	 Version 4.1	    02/10/26 21:24:14	    Page 2
 frame.asm
 
 
 
-     58	0135  4B					     dec bx
-     59	0136  3B D9					     cmp bx, cx
-     60	0138  7D F5					     jge string
+     58
+     59						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
+     60						     ;mov bx, 80 ;счетчик
      61
-     62	013A  C3				     ret;
-     63	013B				     draw_string endp
+     62						     ;cx pos_x
+     63						     ;di pos_y
      64
-     65				     end     Start
-Turbo Assembler	 Version 4.1	    02/10/26 10:24:47	    Page 3
+     65	0139  D1 E1				     shl cx, 1	     ; умножение на 2 (2 байта на символ)
+     66	013B  D1 E3				     shl bx, 1	     ; умножение на 2 (2 байта на символ)
+     67
+     68					     ;=====умножение на	160=======
+     69	013D  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
+     70	      E7 D1 E7
+     71	0147  53				     push bx
+     72	0148  8B DF				     mov bx, di
+     73	014A  D1 E7 D1 E7			     shl di, 2
+     74	014E  03 FB				     add di, bx
+     75	0150  5B				     pop bx
+     76					     ;=================================
+     77
+     78						     ;add bx, cx
+     79	0151					     string:
+     80	0151  26: C7 01	CE03				     mov word ptr es:[bx + di],	(4e03h or 8000h)
+     81	0156  4B					     dec bx
+     82	0157  4B					     dec bx
+     83	0158  3B D9					     cmp bx, cx
+     84	015A  7F F5					     jg	string
+     85
+     86	015C  C3				     ret;
+     87	015D				     draw_string endp
+     88
+     89	015D				     draw_column proc
+     90						     ;cx pos_x
+     91						     ;di pos_y
+     92	015D  4B				     dec bx
+     93	015E  D1 E1				     shl cx, 1	     ; умножение на 2 (2 байта на символ)
+     94	0160  D1 E3				     shl bx, 1	     ; умножение на 2 (2 байта на символ)
+     95
+     96						     ;=====умножение смещения на 160=======
+     97	0162  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
+     98	      E7 D1 E7
+     99	016C  53				     push bx
+    100	016D  8B DF				     mov bx, di
+    101	016F  D1 E7 D1 E7			     shl di, 2
+    102	0173  03 FB				     add di, bx
+    103	0175  5B				     pop bx
+    104						     ;=====================================
+    105
+    106	0176  50				     push ax
+    107	0177  51				     push cx
+    108	0178  8B C3				     mov ax, bx
+    109	017A  B9 0050				     mov cx, 80
+    110	017D  F7 E1				     mul cx
+    111	017F  8B D8				     mov bx, ax
+    112	0181  59				     pop cx
+    113	0182  58				     pop ax
+    114
+Turbo Assembler	 Version 4.1	    02/10/26 21:24:14	    Page 3
+frame.asm
+
+
+
+    115	0183  03 F9				     add di, cx
+    116	0185					     print_column:
+    117	0185  26: C7 01	CE03				     mov word ptr es:[bx + di],	(4e03h or 8000h)
+    118	018A  81 EB 00A0				     sub bx, 160
+    119							     ;dec bx
+    120	018E  83 FB 00					     cmp bx, 0
+    121	0191  7F F2					     jg	print_column
+    122	0193  C3					     ret;
+    123
+    124	0194				     draw_column endp
+    125
+    126				     end     Start
+Turbo Assembler	 Version 4.1	    02/10/26 21:24:14	    Page 4
 Symbol Table
 
 
@@ -83,7 +149,7 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/10/26"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "10:24:46"
+??TIME				  Text	 "21:24:14"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @CODE				  Text	 DGROUP
@@ -97,18 +163,21 @@ Symbol Name			  Type	 Value
 @MODEL				  Text	 1
 @STACK				  Text	 DGROUP
 @WORDSIZE			  Text	 2
-DRAW_STRING			  Near	 DGROUP:0115
+DRAW_COLUMN			  Near	 DGROUP:015D
+DRAW_STRING			  Near	 DGROUP:0139
+PRINT_COLUMN			  Near	 DGROUP:0185
 START				  Near	 DGROUP:0100
-STRING				  Near	 DGROUP:012F
+STRING				  Near	 DGROUP:0151
 
 Macro Name
 
 DRAW
+DRAW_COL
 MUL_R
 
 Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  013B Word	  Public  CODE
+  _TEXT				  16  0194 Word	  Public  CODE
 

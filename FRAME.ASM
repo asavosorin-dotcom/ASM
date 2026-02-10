@@ -10,6 +10,13 @@ DRAW macro length, pos_x, pos_y
 	call draw_string
 ENDM
 	
+DRAW_COL macro height, pos_x, pos_y
+	mov bx, height
+	mov cx, pos_x
+	mov di, pos_y
+	call draw_column
+ENDM
+
 MUL_R macro mlp1, mlp2
 	push ax
 	mov ax, mlp1
@@ -21,10 +28,13 @@ Start:
 	;переход в сегмент видеопамяти
 	mov ax, 0B800h
 	mov es, ax					
-	;xor bx, bx
 	
-	DRAW 30, 10, 0
-	
+	DRAW 	 30, 10, 5
+	DRAW_COL 5,  10, 5
+
+	DRAW     30, 10, 10
+	DRAW_COL 5,  40, 5
+
 	mov ah, 4ch
 	int 21h
 
@@ -33,28 +43,67 @@ Start:
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;счетчик
 
-		shl cx, 1
-		shl bx, 1
+		;cx pos_x
+		;di pos_y
 
-	; -1 и умножение на 160=======
+		shl cx, 1	; умножение на 2 (2 байта на символ)	
+		shl bx, 1	; умножение на 2 (2 байта на символ)
+
+	;=====умножение на 160=======
 		shl di, 5 
 		push bx
 		mov bx, di
 		shl di, 2
 		add di, bx
 		pop bx
-		
 	;=================================
 
-		add bx, cx
+		;add bx, cx
+		; переписать вывод строки!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		string:
 			mov word ptr es:[bx + di], (4e03h or 8000h)
 			dec bx
 			dec bx
 			cmp bx, cx
-			jge string
+			jg string
 
 		ret;
 	draw_string endp
+
+	draw_column proc
+		;cx pos_x
+		;di pos_y
+		dec bx
+		shl cx, 1	; умножение на 2 (2 байта на символ)
+		shl bx, 1	; умножение на 2 (2 байта на символ)
+
+		;=====умножение смещения на 160=======
+		shl di, 5 
+		push bx
+		mov bx, di
+		shl di, 2
+		add di, bx
+		pop bx
+		;=====================================
+
+		push ax
+		push cx
+		mov ax, bx
+		mov cx, 80
+		mul cx
+		mov bx, ax
+		pop cx
+		pop ax
+
+		add di, cx
+		print_column:
+			mov word ptr es:[bx + di], (4e03h or 8000h)
+			sub bx, 160
+			;dec bx   
+			cmp bx, 0
+			jg print_column
+			ret;
+
+	draw_column endp
 
 end 	Start
