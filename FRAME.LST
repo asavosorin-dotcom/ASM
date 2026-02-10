@@ -1,0 +1,64 @@
+Turbo Assembler	 Version 4.1	    02/10/26 09:19:53	    Page 1
+frame.asm
+
+
+
+      1	0000			     .model tiny
+      2	0000			     .code
+      3
+      4				     org 100h
+      5
+      6
+      7	0100			     Start:
+      8					     ;переход в	сегмент	видеопамяти
+      9	0100  B8 B800			     mov ax, 0B800h
+     10	0103  8E C0			     mov es, ax
+     11					     ;xor bx, bx
+     12
+     13	0105  BB 0028			     mov bx, 40
+     14	0108  E8 FEF5			     call DRAW_STRING
+**Error** frame.asm(14)	Undefined symbol: DRAW_STRING
+     15
+     16	010B  B4 4C			     mov ah, 4ch
+     17	010D  CD 21			     int 21h
+     18
+     19
+     20				     end     Start
+Turbo Assembler	 Version 4.1	    02/10/26 09:19:53	    Page 2
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "02/10/26"
+??FILENAME			  Text	 "frame	  "
+??TIME				  Text	 "09:19:53"
+??VERSION			  Number 040A
+@32BIT				  Text	 0
+@CODE				  Text	 DGROUP
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 FRAME
+@INTERFACE			  Text	 000H
+@MODEL				  Text	 1
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+START				  Near	 DGROUP:0100
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  _DATA				  16  0000 Word	  Public  DATA
+  _TEXT				  16  010F Word	  Public  CODE
+Turbo Assembler	 Version 4.1	    02/10/26 09:19:53	    Page 3
+Error Summary
+
+
+
+**Error** frame.asm(14)	Undefined symbol: DRAW_STRING
+
