@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/10/26 09:19:53	    Page 1
+Turbo Assembler	 Version 4.1	    02/10/26 09:36:48	    Page 1
 frame.asm
 
 
@@ -8,23 +8,41 @@ frame.asm
       3
       4				     org 100h
       5
-      6
-      7	0100			     Start:
-      8					     ;переход в	сегмент	видеопамяти
-      9	0100  B8 B800			     mov ax, 0B800h
-     10	0103  8E C0			     mov es, ax
-     11					     ;xor bx, bx
-     12
-     13	0105  BB 0028			     mov bx, 40
-     14	0108  E8 FEF5			     call DRAW_STRING
-**Error** frame.asm(14)	Undefined symbol: DRAW_STRING
-     15
-     16	010B  B4 4C			     mov ah, 4ch
-     17	010D  CD 21			     int 21h
-     18
-     19
-     20				     end     Start
-Turbo Assembler	 Version 4.1	    02/10/26 09:19:53	    Page 2
+      6				     DRAW macro	length
+      7					     mov bx, length
+      8					     call draw_string
+      9				     ENDM
+     10
+     11	0100			     Start:
+     12					     ;переход в	сегмент	видеопамяти
+     13	0100  B8 B800			     mov ax, 0B800h
+     14	0103  8E C0			     mov es, ax
+     15					     ;xor bx, bx
+     16
+     17					     DRAW 30
+1    18	0105  BB 001E			     mov bx, 30
+1    19	0108  E8 0004			     call draw_string
+     20
+     21	010B  B4 4C			     mov ah, 4ch
+     22	010D  CD 21			     int 21h
+     23
+     24
+     25	010F				     draw_string proc
+     26
+     27						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
+     28						     ;mov bx, 80 ;счетчик
+     29	010F					     string:
+     30	010F  26: C7 87	0280 CE03			     mov word ptr es:[bx + 160*4], (4e03h or 8000h)
+     31	0116  4B					     dec bx
+     32	0117  4B					     dec bx
+     33	0118  83 FB 00					     cmp bx, 0
+     34	011B  7D F2					     jge string
+     35
+     36	011D  C3				     ret;
+     37	011E				     draw_string endp
+     38
+     39				     end     Start
+Turbo Assembler	 Version 4.1	    02/10/26 09:36:48	    Page 2
 Symbol Table
 
 
@@ -34,7 +52,7 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/10/26"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "09:19:53"
+??TIME				  Text	 "09:36:48"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @CODE				  Text	 DGROUP
@@ -48,17 +66,17 @@ Symbol Name			  Type	 Value
 @MODEL				  Text	 1
 @STACK				  Text	 DGROUP
 @WORDSIZE			  Text	 2
+DRAW_STRING			  Near	 DGROUP:010F
 START				  Near	 DGROUP:0100
+STRING				  Near	 DGROUP:010F
+
+Macro Name
+
+DRAW
 
 Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  010F Word	  Public  CODE
-Turbo Assembler	 Version 4.1	    02/10/26 09:19:53	    Page 3
-Error Summary
-
-
-
-**Error** frame.asm(14)	Undefined symbol: DRAW_STRING
+  _TEXT				  16  011E Word	  Public  CODE
 

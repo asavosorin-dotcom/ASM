@@ -3,6 +3,10 @@
 
 org 100h
 
+DRAW macro length
+	mov bx, length
+	call draw_string
+ENDM
 	
 Start: 
 	;переход в сегмент видеопамяти
@@ -10,13 +14,13 @@ Start:
 	mov es, ax					
 	;xor bx, bx
 		
-	mov bx, 40
-	call DRAW_STRING 
-
+	DRAW 30
+	
 	mov ah, 4ch
 	int 21h
 
-	DRAW_STRING proc																																																																									 																																																																						 																																																										
+
+	draw_string proc																																																																									 																																																																						 																																																										
 
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;счетчик
@@ -28,6 +32,6 @@ Start:
 			jge string
 
 		ret;
-	DRAW_STRING endp
+	draw_string endp
 
 end 	Start
