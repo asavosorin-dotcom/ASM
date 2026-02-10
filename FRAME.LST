@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/10/26 09:36:48	    Page 1
+Turbo Assembler	 Version 4.1	    02/10/26 09:39:43	    Page 1
 frame.asm
 
 
@@ -19,30 +19,32 @@ frame.asm
      14	0103  8E C0			     mov es, ax
      15					     ;xor bx, bx
      16
-     17					     DRAW 30
-1    18	0105  BB 001E			     mov bx, 30
-1    19	0108  E8 0004			     call draw_string
-     20
-     21	010B  B4 4C			     mov ah, 4ch
-     22	010D  CD 21			     int 21h
-     23
+     17	0105  B9 000A			     mov cx, 10
+     18					     DRAW 30
+1    19	0108  BB 001E			     mov bx, 30
+1    20	010B  E8 0004			     call draw_string
+     21
+     22	010E  B4 4C			     mov ah, 4ch
+     23	0110  CD 21			     int 21h
      24
-     25	010F				     draw_string proc
-     26
-     27						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
-     28						     ;mov bx, 80 ;счетчик
-     29	010F					     string:
-     30	010F  26: C7 87	0280 CE03			     mov word ptr es:[bx + 160*4], (4e03h or 8000h)
-     31	0116  4B					     dec bx
-     32	0117  4B					     dec bx
-     33	0118  83 FB 00					     cmp bx, 0
-     34	011B  7D F2					     jge string
-     35
-     36	011D  C3				     ret;
-     37	011E				     draw_string endp
-     38
-     39				     end     Start
-Turbo Assembler	 Version 4.1	    02/10/26 09:36:48	    Page 2
+     25
+     26	0112				     draw_string proc
+     27
+     28						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
+     29						     ;mov bx, 80 ;счетчик
+     30	0112  03 D9				     add bx, cx
+     31	0114					     string:
+     32	0114  26: C7 87	0280 CE03			     mov word ptr es:[bx + 160*4], (4e03h or 8000h)
+     33	011B  4B					     dec bx
+     34	011C  4B					     dec bx
+     35	011D  3B D9					     cmp bx, cx
+     36	011F  7D F3					     jge string
+     37
+     38	0121  C3				     ret;
+     39	0122				     draw_string endp
+     40
+     41				     end     Start
+Turbo Assembler	 Version 4.1	    02/10/26 09:39:43	    Page 2
 Symbol Table
 
 
@@ -52,7 +54,7 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/10/26"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "09:36:48"
+??TIME				  Text	 "09:39:43"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @CODE				  Text	 DGROUP
@@ -66,9 +68,9 @@ Symbol Name			  Type	 Value
 @MODEL				  Text	 1
 @STACK				  Text	 DGROUP
 @WORDSIZE			  Text	 2
-DRAW_STRING			  Near	 DGROUP:010F
+DRAW_STRING			  Near	 DGROUP:0112
 START				  Near	 DGROUP:0100
-STRING				  Near	 DGROUP:010F
+STRING				  Near	 DGROUP:0114
 
 Macro Name
 
@@ -78,5 +80,5 @@ Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  011E Word	  Public  CODE
+  _TEXT				  16  0122 Word	  Public  CODE
 

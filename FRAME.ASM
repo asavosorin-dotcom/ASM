@@ -13,7 +13,8 @@ Start:
 	mov ax, 0B800h
 	mov es, ax					
 	;xor bx, bx
-		
+	
+	mov cx, 10
 	DRAW 30
 	
 	mov ah, 4ch
@@ -24,11 +25,12 @@ Start:
 
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;счетчик
+		add bx, cx
 		string:
 			mov word ptr es:[bx + 160*4], (4e03h or 8000h)
 			dec bx
 			dec bx
-			cmp bx, 0
+			cmp bx, cx
 			jge string
 
 		ret;
