@@ -3,8 +3,11 @@
 
 org 100h
 
-DRAW macro length
+DRAW macro length, pos_x
 	mov bx, length
+	mov cx, pos_x
+	shl cx, 1
+	shl bx, 1
 	call draw_string
 ENDM
 	
@@ -14,18 +17,15 @@ Start:
 	mov es, ax					
 	;xor bx, bx
 	
-	mov cx, 10
-	DRAW 30
+	DRAW 30, 10
 	
 	mov ah, 4ch
 	int 21h
-
 
 	draw_string proc																																																																									 																																																																						 																																																										
 
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;счетчик
-		shl bx, 1
 		add bx, cx
 		string:
 			mov word ptr es:[bx + 160*4], (4e03h or 8000h)
