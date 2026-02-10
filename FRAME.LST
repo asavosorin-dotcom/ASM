@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/10/26 09:39:43	    Page 1
+Turbo Assembler	 Version 4.1	    02/10/26 09:44:26	    Page 1
 frame.asm
 
 
@@ -32,19 +32,20 @@ frame.asm
      27
      28						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
      29						     ;mov bx, 80 ;счетчик
-     30	0112  03 D9				     add bx, cx
-     31	0114					     string:
-     32	0114  26: C7 87	0280 CE03			     mov word ptr es:[bx + 160*4], (4e03h or 8000h)
-     33	011B  4B					     dec bx
-     34	011C  4B					     dec bx
-     35	011D  3B D9					     cmp bx, cx
-     36	011F  7D F3					     jge string
-     37
-     38	0121  C3				     ret;
-     39	0122				     draw_string endp
-     40
-     41				     end     Start
-Turbo Assembler	 Version 4.1	    02/10/26 09:39:43	    Page 2
+     30	0112  D1 E3				     shl bx, 1
+     31	0114  03 D9				     add bx, cx
+     32	0116					     string:
+     33	0116  26: C7 87	0280 CE03			     mov word ptr es:[bx + 160*4], (4e03h or 8000h)
+     34	011D  4B					     dec bx
+     35	011E  4B					     dec bx
+     36	011F  3B D9					     cmp bx, cx
+     37	0121  7D F3					     jge string
+     38
+     39	0123  C3				     ret;
+     40	0124				     draw_string endp
+     41
+     42				     end     Start
+Turbo Assembler	 Version 4.1	    02/10/26 09:44:26	    Page 2
 Symbol Table
 
 
@@ -54,7 +55,7 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/10/26"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "09:39:43"
+??TIME				  Text	 "09:44:26"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @CODE				  Text	 DGROUP
@@ -70,7 +71,7 @@ Symbol Name			  Type	 Value
 @WORDSIZE			  Text	 2
 DRAW_STRING			  Near	 DGROUP:0112
 START				  Near	 DGROUP:0100
-STRING				  Near	 DGROUP:0114
+STRING				  Near	 DGROUP:0116
 
 Macro Name
 
@@ -80,5 +81,5 @@ Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  0122 Word	  Public  CODE
+  _TEXT				  16  0124 Word	  Public  CODE
 

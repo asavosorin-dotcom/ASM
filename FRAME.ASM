@@ -25,6 +25,7 @@ Start:
 
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;счетчик
+		shl bx, 1
 		add bx, cx
 		string:
 			mov word ptr es:[bx + 160*4], (4e03h or 8000h)
