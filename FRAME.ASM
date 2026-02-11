@@ -3,13 +3,6 @@
 
 org 100h
 
-DRAW macro length, pos_x, pos_y
-	mov bx, length
-	mov cx, pos_x
-	mov di, pos_y
-	call draw_string
-ENDM
-	
 DRAW_COL macro height, pos_x, pos_y
 	mov bx, height
 	mov cx, pos_x
@@ -24,16 +17,37 @@ MUL_R macro mlp1, mlp2
 	mov mlp1, ax
 	pop ax
 ENDM
+DRAW_STR macro length, pos_x, pos_y
+	mov bx, length
+	mov cx, pos_x
+	mov di, pos_y
+	call draw_string
+ENDM
+	
+DRAW macro length, height, pos_x, pos_y
+	
+	DRAW_STR length, pos_x, pos_y
+	DRAW_COL height, pos_x, pos_y
+
+	Sum_y equ pos_y + height - 1
+	Sum_x equ pos_x + length - 1
+
+	DRAW_STR length, pos_x, Sum_y 
+	DRAW_COL height, Sum_x, pos_y
+ENDM
+
 Start: 
 	;переход в сегмент видеопамяти
 	mov ax, 0B800h
 	mov es, ax					
 	
-	DRAW 	 29, 10, 0
-	DRAW_COL 6,  10, 0
+	DRAW 5, 5, 10, 3
 
-	DRAW     29, 10, 5
-	DRAW_COL 6,  40, 0
+;	DRAW_STR 10, 5, 3
+;	DRAW_COL 6,  10, 0
+;
+;	DRAW_STR 29, 10, 5
+;	DRAW_COL 6,  40, 0
 
 	mov ah, 4ch
 	int 21h
@@ -45,7 +59,7 @@ Start:
 
 		;cx pos_x
 		;di pos_y
-
+		dec bx
 		shl cx, 1	; умножение на 2 (2 байта на символ)	
 		shl bx, 1	; умножение на 2 (2 байта на символ)
 
@@ -65,7 +79,7 @@ Start:
 			dec bx
 			dec bx
 			cmp bx, 0
-			jg string
+			jge string
 
 		ret;
 	draw_string endp
@@ -102,7 +116,8 @@ Start:
 			;dec bx   
 			cmp bx, 0
 			jge print_column
-			ret;
+
+		ret;
 
 	draw_column endp
 
