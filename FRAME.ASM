@@ -29,11 +29,11 @@ Start:
 	mov ax, 0B800h
 	mov es, ax					
 	
-	DRAW 	 30, 10, 5
-	DRAW_COL 5,  10, 5
+	;DRAW 	 30, 10, 0
+	DRAW_COL 5,  11, 0
 
-	DRAW     30, 10, 10
-	DRAW_COL 5,  40, 5
+	;DRAW     30, 10, 10
+	DRAW_COL 5,  40, 0
 
 	mov ah, 4ch
 	int 21h
@@ -49,7 +49,7 @@ Start:
 		shl cx, 1	; умножение на 2 (2 байта на символ)	
 		shl bx, 1	; умножение на 2 (2 байта на символ)
 
-	;=====умножение на 160=======
+	;=====умножение смещения y на 160=======
 		shl di, 5 
 		push bx
 		mov bx, di
@@ -57,14 +57,14 @@ Start:
 		add di, bx
 		pop bx
 	;=================================
-
+		add di, cx
 		;add bx, cx
 		; переписать вывод строки!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		string:
 			mov word ptr es:[bx + di], (4e03h or 8000h)
 			dec bx
 			dec bx
-			cmp bx, cx
+			cmp bx, 0
 			jg string
 
 		ret;
@@ -73,7 +73,7 @@ Start:
 	draw_column proc
 		;cx pos_x
 		;di pos_y
-		dec bx
+		;dec bx
 		shl cx, 1	; умножение на 2 (2 байта на символ)
 		shl bx, 1	; умножение на 2 (2 байта на символ)
 
