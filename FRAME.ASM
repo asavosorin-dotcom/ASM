@@ -29,11 +29,11 @@ Start:
 	mov ax, 0B800h
 	mov es, ax					
 	
-	;DRAW 	 30, 10, 0
-	DRAW_COL 5,  11, 0
+	DRAW 	 29, 10, 0
+	DRAW_COL 6,  10, 0
 
-	;DRAW     30, 10, 10
-	DRAW_COL 5,  40, 0
+	DRAW     29, 10, 5
+	DRAW_COL 6,  40, 0
 
 	mov ah, 4ch
 	int 21h
@@ -73,7 +73,7 @@ Start:
 	draw_column proc
 		;cx pos_x
 		;di pos_y
-		;dec bx
+		dec bx
 		shl cx, 1	; умножение на 2 (2 байта на символ)
 		shl bx, 1	; умножение на 2 (2 байта на символ)
 
@@ -101,7 +101,7 @@ Start:
 			sub bx, 160
 			;dec bx   
 			cmp bx, 0
-			jg print_column
+			jge print_column
 			ret;
 
 	draw_column endp
