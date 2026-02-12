@@ -10,14 +10,6 @@ DRAW_COL macro height, pos_x, pos_y
 	call draw_column
 ENDM
 
-MUL_R macro mlp1, mlp2
-	push ax
-	mov ax, mlp1
-	mul mlp2
-	mov mlp1, ax
-	pop ax
-ENDM
-
 DRAW_STR macro length, pos_x, pos_y
 	mov bx, length
 	mov cx, pos_x
@@ -25,7 +17,7 @@ DRAW_STR macro length, pos_x, pos_y
 	call draw_string
 ENDM
 	
-DRAW macro length, height, pos_x, pos_y
+DRAW_FRAME macro length, height, pos_x, pos_y
 	
 	DRAW_STR length, pos_x, pos_y
 	DRAW_COL height, pos_x, pos_y
@@ -35,9 +27,15 @@ DRAW macro length, height, pos_x, pos_y
 
 	DRAW_STR length, pos_x, Sum_y 
 	DRAW_COL height, Sum_x, pos_y
+ 
+ENDM
 
-	BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length - 6 + (length and 1) ; -6 + остаток от деления на 2
-	ENDM
+DRAW_FRAME_WORD macro length, height, pos_x, pos_y
+
+	DRAW_FRAME length, height, pos_x, pos_y
+	BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length
+
+ENDM
 
 ;очистка дисплея
 ;INT 10H 006H
@@ -47,7 +45,7 @@ Start:
 	mov ax, 0B800h
 	mov es, ax					
 	
-	DRAW 30, 5, 10, 3
+	DRAW_FRAME_WORD 30, 5, 10, 3
 
 ;	DRAW_STR 10, 5, 3
 ;	DRAW_COL 6,  10, 0
@@ -55,32 +53,9 @@ Start:
 ;	DRAW_STR 29, 10, 5
 ;	DRAW_COL 6,  40, 0
 
-	
-	push cx
-	push di
-	xor cx, cx
-	xor di, di  	
-	mov cl, ds:80h
-	dec cl
-	mov si, 82h ; вот тут могут быть проблемы
-	;BEG equ 5 * 160 + 40
-	mov di, cx
-	shr di, 2
-	shl di, 1
-	neg di
-	add di, 2
-	add di, BEG
-	;mov di, BEG ; начало вывода
-	mov ah, (1Fh or 88h) ;задаем цвет на все ячейки
-	L:
-		lodsb	
-		stosw
-		loop L
+	call print_word_in_frame
 
-	pop di 
-	pop cx
-
-	DRAW 8, 3, 1, 1
+	DRAW_FRAME 8, 3, 1, 1
 
 	mov ah, 4ch
 	int 21h
@@ -155,5 +130,32 @@ Start:
 		ret;
 
 	draw_column endp
+
+	print_word_in_frame proc
+			push cx
+			push di
+			xor cx, cx
+			xor di, di  	
+			mov cl, ds:80h
+			dec cl
+			mov si, 82h ; вот тут могут быть проблемы
+			;BEG equ 5 * 160 + 40
+			mov di, cx
+			shr di, 2
+			shl di, 1
+			neg di
+			sub di, 2
+			add di, BEG
+			;mov di, BEG ; начало вывода
+			mov ah, (1Fh or 88h) ;задаем цвет на все ячейки
+			L:
+				lodsb	
+				stosw
+				loop L
+
+			pop di 
+			pop cx
+			ret
+	endp					
 
 end 	Start
