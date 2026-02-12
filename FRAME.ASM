@@ -17,6 +17,7 @@ MUL_R macro mlp1, mlp2
 	mov mlp1, ax
 	pop ax
 ENDM
+
 DRAW_STR macro length, pos_x, pos_y
 	mov bx, length
 	mov cx, pos_x
@@ -29,19 +30,24 @@ DRAW macro length, height, pos_x, pos_y
 	DRAW_STR length, pos_x, pos_y
 	DRAW_COL height, pos_x, pos_y
 
-	Sum_y equ pos_y + height - 1
-	Sum_x equ pos_x + length - 1
+	Sum_y = pos_y + height - 1
+	Sum_x = pos_x + length - 1
 
 	DRAW_STR length, pos_x, Sum_y 
 	DRAW_COL height, Sum_x, pos_y
-ENDM
+
+	BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length - 6 + (length and 1) ; -6 + остаток от деления на 2
+	ENDM
+
+;очистка дисплея
+;INT 10H 006H
 
 Start: 
 	;переход в сегмент видеопамяти
 	mov ax, 0B800h
 	mov es, ax					
 	
-	DRAW 5, 5, 10, 3
+	DRAW 30, 5, 10, 3
 
 ;	DRAW_STR 10, 5, 3
 ;	DRAW_COL 6,  10, 0
@@ -49,8 +55,37 @@ Start:
 ;	DRAW_STR 29, 10, 5
 ;	DRAW_COL 6,  40, 0
 
+	
+	push cx
+	push di
+	xor cx, cx
+	xor di, di  	
+	mov cl, ds:80h
+	dec cl
+	mov si, 82h ; вот тут могут быть проблемы
+	;BEG equ 5 * 160 + 40
+	mov di, cx
+	shr di, 2
+	shl di, 1
+	neg di
+	add di, 2
+	add di, BEG
+	;mov di, BEG ; начало вывода
+	mov ah, (1Fh or 88h) ;задаем цвет на все ячейки
+	L:
+		lodsb	
+		stosw
+		loop L
+
+	pop di 
+	pop cx
+
+	DRAW 8, 3, 1, 1
+
 	mov ah, 4ch
 	int 21h
+
+	
 
 	draw_string proc																																																																									 																																																																						 																																																										
 
@@ -75,7 +110,7 @@ Start:
 		;add bx, cx
 		; переписать вывод строки!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		string:
-			mov word ptr es:[bx + di], (4e03h or 8000h)
+			mov word ptr es:[bx + di], (1F03h or 8000h)
 			dec bx
 			dec bx
 			cmp bx, 0
@@ -111,7 +146,7 @@ Start:
 
 		add di, cx
 		print_column:
-			mov word ptr es:[bx + di], (4e03h or 8000h)
+			mov word ptr es:[bx + di], (1F03h or 8000h)
 			sub bx, 160
 			;dec bx   
 			cmp bx, 0
