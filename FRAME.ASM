@@ -3,77 +3,93 @@
 
 org 100h
 
-DRAW_COL macro height, pos_x, pos_y
+;===========================================================================
+;DESTR: ax, bx, cx, di
+;===========================================================================
+
+DRAW_COL macro height, pos_x, pos_y, symbol
 	mov bx, height
 	mov cx, pos_x
 	mov di, pos_y
+
+	mov ax, symbol
+	push ax
+
 	call draw_column
 ENDM
 
-DRAW_STR macro length, pos_x, pos_y
+;===========================================================================
+;DESTR: ax, bx, cx, di
+;===========================================================================
+
+DRAW_STR macro length, pos_x, pos_y, symbol
 	mov bx, length
 	mov cx, pos_x
 	mov di, pos_y
+
+	mov ax, symbol
+	push ax
+
 	call draw_string
 ENDM
 	
-DRAW_FRAME macro length, height, pos_x, pos_y
+DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 	
-	DRAW_STR length, pos_x, pos_y
-	DRAW_COL height, pos_x, pos_y
+	DRAW_STR length, pos_x, pos_y, symbol
+	DRAW_COL height, pos_x, pos_y, symbol
 
 	Sum_y = pos_y + height - 1
 	Sum_x = pos_x + length - 1
 
-	DRAW_STR length, pos_x, Sum_y 
-	DRAW_COL height, Sum_x, pos_y
+	DRAW_STR length, pos_x, Sum_y, symbol 
+	DRAW_COL height, Sum_x, pos_y, symbol
  
 ENDM
 
-DRAW_FRAME_WORD macro length, height, pos_x, pos_y
+DRAW_FRAME_WORD macro length, height, pos_x, pos_y, symbol
 
-	DRAW_FRAME length, height, pos_x, pos_y
+	DRAW_FRAME length, height, pos_x, pos_y, symbol
 	BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length
 
 ENDM
 
-;очистка дисплея
+;юўшёЄър ¤ъЁрэр
 ;INT 10H 006H
 
 Start: 
-	;переход в сегмент видеопамяти
+	;
 	mov ax, 0B800h
 	mov es, ax					
 	
-	DRAW_FRAME_WORD 30, 5, 10, 3
+	DRAW_FRAME_WORD 30, 5, 10, 3, 1F03h or 8080h
 
-;	DRAW_STR 10, 5, 3
-;	DRAW_COL 6,  10, 0
+;	DRAW_STR 10, 5, 3, 1F03h
+;	DRAW_COL 6,  10, 0, 1F03h
 ;
 ;	DRAW_STR 29, 10, 5
 ;	DRAW_COL 6,  40, 0
 
 	call print_word_in_frame
 
-	DRAW_FRAME 8, 3, 1, 1
+	;DRAW_FRAME 8, 3, 1, 1, 1F03h or 8080h
 
 	mov ah, 4ch
 	int 21h
 
-	
-
 	draw_string proc																																																																									 																																																																						 																																																										
-
+		push bp
+		mov bp, sp
+		add bp, 4
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
-		;mov bx, 80 ;счетчик
+		;mov bx, 80 ;
 
 		;cx pos_x
 		;di pos_y
 		dec bx
-		shl cx, 1	; умножение на 2 (2 байта на символ)	
-		shl bx, 1	; умножение на 2 (2 байта на символ)
+		shl cx, 1	;	
+		shl bx, 1	;
 
-	;=====умножение смещения y на 160=======
+	;===== ╙ьэюцхэшх ёьх∙хэш  эр 160=======
 		shl di, 5 
 		push bx
 		mov bx, di
@@ -83,25 +99,38 @@ Start:
 	;=================================
 		add di, cx
 		;add bx, cx
-		; переписать вывод строки!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		
+		push cx
+		xor cx, cx
+		mov word ptr cx, [bp]
+
 		string:
-			mov word ptr es:[bx + di], (1F03h or 8000h)
+			mov word ptr es:[bx + di], cx
 			dec bx
 			dec bx
 			cmp bx, 0
 			jge string
 
-		ret;
+		pop cx
+
+		pop bp
+
+		ret 2
+
 	draw_string endp
 
 	draw_column proc
+		push bp
+		mov bp, sp
+		add bp, 4 ; яЁюяєёърхь рфЁхё тючтЁрЄр
+
 		;cx pos_x
 		;di pos_y
 		dec bx
-		shl cx, 1	; умножение на 2 (2 байта на символ)
-		shl bx, 1	; умножение на 2 (2 байта на символ)
+		shl cx, 1	; 2 срщЄр эр ёшьтюы
+		shl bx, 1	; 2 срщЄр эр ёшьтюы
 
-		;=====умножение смещения на 160=======
+		;===== ╙ьэюцхэшх ёьх∙хэш  y эр 160=======
 		shl di, 5 
 		push bx
 		mov bx, di
@@ -120,14 +149,22 @@ Start:
 		pop ax
 
 		add di, cx
+
+		push cx
+		mov word ptr cx, [bp]
+
 		print_column:
-			mov word ptr es:[bx + di], (1F03h or 8000h)
+			mov word ptr es:[bx + di], cx
 			sub bx, 160
 			;dec bx   
 			cmp bx, 0
 			jge print_column
 
-		ret;
+		pop cx
+		pop bp
+
+		ret 2
+
 
 	draw_column endp
 
@@ -138,7 +175,7 @@ Start:
 			xor di, di  	
 			mov cl, ds:80h
 			dec cl
-			mov si, 82h ; вот тут могут быть проблемы
+			mov si, 82h 
 			;BEG equ 5 * 160 + 40
 			mov di, cx
 			shr di, 2
@@ -146,15 +183,15 @@ Start:
 			neg di
 			sub di, 2
 			add di, BEG
-			;mov di, BEG ; начало вывода
-			mov ah, (1Fh or 88h) ;задаем цвет на все ячейки
+			;mov di, BEG ; а
+			mov ah, (1Fh or 88h) ;
 			L:
 				lodsb	
 				stosw
 				loop L
 
-			pop di 
-			pop cx
+			pop di
+			pop cx 
 			ret
 	endp					
 
