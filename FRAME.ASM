@@ -129,7 +129,7 @@ Start:
 
 		pop bp
 
-		ret 2
+		ret 
 
 	draw_string endp
 
@@ -177,7 +177,7 @@ Start:
 		pop cx
 		pop bp
 
-		ret 2
+		ret
 
 
 	draw_column endp
