@@ -61,8 +61,15 @@ Start:
 	mov ax, 0B800h
 	mov es, ax					
 	
-	DRAW_FRAME_WORD 30, 5, 10, 3, 1F03h or 8080h
+	; Подумать как можно передавать символ для всех рамок
+	; lea bx, Symbol_arr
+	; add bx, 2
 
+	; push bx
+
+	DRAW_FRAME_WORD 30, 5, 10, 3, [Symbol_arr]
+
+	;pop bx
 ;	DRAW_STR 10, 5, 3, 1F03h
 ;	DRAW_COL 6,  10, 0, 1F03h
 ;
@@ -75,6 +82,8 @@ Start:
 
 	mov ah, 4ch
 	int 21h
+
+	Symbol_arr dw 1F03h, 4E03h
 
 	draw_string proc																																																																									 																																																																						 																																																										
 		push bp
@@ -174,6 +183,10 @@ Start:
 			xor cx, cx
 			xor di, di  	
 			mov cl, ds:80h
+
+			cmp cl, 0
+			je ??return
+
 			dec cl
 			mov si, 82h 
 			;BEG equ 5 * 160 + 40
@@ -190,6 +203,7 @@ Start:
 				stosw
 				loop L
 
+			??return:
 			pop di
 			pop cx 
 			ret
