@@ -7,13 +7,15 @@ org 100h
 ;DESTR: ax, bx, cx, di
 ;===========================================================================
 
+; можно передавать аргументом символа его адрес в пам€ти
+
 DRAW_COL macro height, pos_x, pos_y, symbol
 	mov bx, height
 	mov cx, pos_x
 	mov di, pos_y
 
-	mov ax, symbol
-	push ax
+	; mov ax, symbol
+	; push ax
 
 	call draw_column
 ENDM
@@ -23,17 +25,22 @@ ENDM
 ;===========================================================================
 
 DRAW_STR macro length, pos_x, pos_y, symbol
-	mov bx, length
-	mov cx, pos_x
-	mov di, pos_y
+	mov  bx, length
+	mov  cx, pos_x
+	mov  di, pos_y
 
-	mov ax, symbol
-	push ax
+	; mov  ax, symbol
+	; push ax
 
 	call draw_string
 ENDM
 	
 DRAW_FRAME macro length, height, pos_x, pos_y, symbol
+	
+	lea bx, Symbol_arr
+	add bx, symbol
+
+	push [bx]
 	
 	DRAW_STR length, pos_x, pos_y, symbol
 	DRAW_COL height, pos_x, pos_y, symbol
@@ -43,6 +50,8 @@ DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 
 	DRAW_STR length, pos_x, Sum_y, symbol 
 	DRAW_COL height, Sum_x, pos_y, symbol
+
+	add sp, 2
  
 ENDM
 
@@ -62,12 +71,8 @@ Start:
 	mov es, ax					
 	
 	; ѕодумать как можно передавать символ дл€ всех рамок
-	; lea bx, Symbol_arr
-	; add bx, 2
 
-	; push bx
-
-	DRAW_FRAME_WORD 30, 5, 10, 3, [Symbol_arr]
+	DRAW_FRAME_WORD 30, 5, 10, 3, 2
 
 	;pop bx
 ;	DRAW_STR 10, 5, 3, 1F03h
