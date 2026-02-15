@@ -3,11 +3,15 @@
 
 org 100h
 
+local @@
+
 ;===========================================================================
 ;DESTR: ax, bx, cx, di
 ;===========================================================================
 
 ; можно передавать аргументом символа его адрес в памяти
+
+; надо написать процедуру, которая считывает число из командной строки
 
 DRAW_COL macro height, pos_x, pos_y, symbol
 	mov bx, height
@@ -79,7 +83,7 @@ Start:
 ;	DRAW_COL 6,  10, 0, 1F03h
 ;
 ;	DRAW_STR 29, 10, 5
-;	DRAW_COL 6,  40, 0
+;	DRAW_COL 6,  40, 0	
 
 	call print_word_in_frame
 
@@ -89,6 +93,7 @@ Start:
 	int 21h
 
 	Symbol_arr dw 1F03h, 4E03h
+
 
 	draw_string proc																																																																									 																																																																						 																																																										
 		push bp
@@ -181,7 +186,12 @@ Start:
 
 
 	draw_column endp
-
+;====================================================================
+;Start:	
+;   di - counter of symbols 
+;	si - adress of string
+;Return: ax - число
+;====================================================================
 	print_word_in_frame proc
 			push cx
 			push di
@@ -190,7 +200,7 @@ Start:
 			mov cl, ds:80h
 
 			cmp cl, 0
-			je ??return
+			je @@return
 
 			dec cl
 			mov si, 82h 
@@ -208,10 +218,41 @@ Start:
 				stosw
 				loop L
 
-			??return:
+			@@return:
 			pop di
 			pop cx 
 			ret
 	endp					
+
+;====================================================================
+; Start:  di - number of symbols
+;		  si - adress of string
+; Destr:  di, si, dx, ax
+; Return: dx - число
+;====================================================================
+;	get_num_from_command proc
+;		cmp [si], ' '
+;		je @@return
+;		xor ax, ax
+;		xor dx, dx
+;
+;		 @@digit:
+;			lodsb
+;
+;			push ax
+;			mov ax, dx
+;			mul 10
+;			mov dx, ax
+;			pop ax
+;
+;			add dx, ax
+;
+;			cmp [si], ' '
+;			jne @@digit
+;
+;		@return:
+;		ret
+;	endp
+
 
 end 	Start
