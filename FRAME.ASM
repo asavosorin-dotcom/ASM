@@ -27,7 +27,7 @@ ENDM
 ;===========================================================================
 ;DESTR: ax, bx, cx, di
 ;===========================================================================
-
+; 9F96
 DRAW_STR macro length, pos_x, pos_y, symbol
 	mov  bx, length
 	mov  cx, pos_x
@@ -41,9 +41,11 @@ ENDM
 	
 DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 	
+	shl dx, 1 ; arr of words
 	lea bx, Symbol_arr
-	add bx, symbol
+	add bx, dx
 
+	push cx
 	push [bx]
 	
 	DRAW_STR length, pos_x, pos_y, symbol
@@ -56,11 +58,13 @@ DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 	DRAW_COL height, Sum_x, pos_y, symbol
 
 	add sp, 2
+	pop cx
  
 ENDM
 
 DRAW_FRAME_WORD macro length, height, pos_x, pos_y, symbol
 
+	call get_num_from_command ; получаем индекс в массиве символов
 	DRAW_FRAME length, height, pos_x, pos_y, symbol
 	BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length
 
@@ -76,13 +80,14 @@ Start:
 	
 	; Подумать как можно передавать символ для всех рамок
 
-	DRAW_FRAME_WORD 30, 5, 10, 3, 2
 
 	mov cl, ds:80h
 	mov si, 82h
 	;mov di, cx
 
-	call get_num_from_command
+	DRAW_FRAME_WORD 30, 5, 10, 3, 2
+
+	call print_word_in_frame
 
 	;pop bx
 ;	DRAW_STR 10, 5, 3, 1F03h
@@ -93,14 +98,13 @@ Start:
 
 
 
-	; call print_word_in_frame
 
 	;DRAW_FRAME 8, 3, 1, 1, 1F03h or 8080h
 
 	mov ah, 4ch
 	int 21h
 
-	Symbol_arr dw 1F03h, 4E03h
+	Symbol_arr dw 1F03h, 4E03h, 8B55h, 04C5h
 
 
 	draw_string proc																																																																									 																																																																						 																																																										
@@ -199,19 +203,22 @@ Start:
 ;   cx - counter of symbols 
 ;	si - adress of string
 ;Return: ax - число
+;Destr: cx, di, si
 ;====================================================================
 	print_word_in_frame proc
-			push cx
+			; push cx
+			dec cx
 			push di
-			xor cx, cx
+			add si, 1 ; skip_space
+			;xor cx, cx
 			xor di, di  	
-			mov cl, ds:80h
+			;mov cl, ds:80h
 
 			cmp cl, 0
 			je @@return
 
 			dec cl
-			mov si, 82h 
+			;mov si, 82h 
 			;BEG equ 5 * 160 + 40
 			mov di, cx
 			shr di, 2
@@ -228,14 +235,14 @@ Start:
 
 			@@return:
 			pop di
-			pop cx 
+			; pop cx 
 			ret
 	endp					
 
 ;====================================================================
 ; Start:  cx - number of symbols
 ;		  si - adress of string
-; Destr:  di, si, dx, ax
+; Destr:  cx, si, dx, ax
 ; Return: dx - число
 ;====================================================================
 	get_num_from_command proc
@@ -254,8 +261,10 @@ Start:
 			add dx, cx
 			pop cx
 
-			sub ax, '0'
+			;sub ax, '0'
+			and al, 0fh
 			add dx, ax
+			dec cx
 
 			cmp byte ptr [si], ' '
 			jne @@digit
