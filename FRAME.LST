@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/15/26 11:26:02	    Page 1
+Turbo Assembler	 Version 4.1	    02/15/26 11:40:00	    Page 1
 frame.asm
 
 
@@ -60,7 +60,7 @@ frame.asm
      55					     DRAW_STR length, pos_x, Sum_y, symbol
      56					     DRAW_COL height, Sum_x, pos_y, symbol
      57
-Turbo Assembler	 Version 4.1	    02/15/26 11:26:02	    Page 2
+Turbo Assembler	 Version 4.1	    02/15/26 11:40:00	    Page 2
 frame.asm
 
 
@@ -86,30 +86,30 @@ frame.asm
      76
      77					     ; Подумать	как можно передавать символ для	всех рамок
      78
-     79					     DRAW_FRAME_WORD 30, 5, 10,	3, 0
+     79					     DRAW_FRAME_WORD 30, 5, 10,	3, 2
 1    80
-1    81					     DRAW_FRAME	30, 5, 10, 3, 0
+1    81					     DRAW_FRAME	30, 5, 10, 3, 2
 2    82
 2    83	0105  BB 0147r			     lea bx, Symbol_arr
-2    84	0108  83 C3 00			     add bx, 0
+2    84	0108  83 C3 02			     add bx, 2
 2    85
 2    86	010B  FF 37			     push [bx]
 2    87
-2    88					     DRAW_STR 30, 10, 3, 0
+2    88					     DRAW_STR 30, 10, 3, 2
 3    89	010D  BB 001E			     mov  bx, 30
 3    90	0110  B9 000A			     mov  cx, 10
 3    91	0113  BF 0003			     mov  di, 3
 3    92
-3    93					     ; mov  ax,	0
+3    93					     ; mov  ax,	2
 3    94					     ; push ax
 3    95
 3    96	0116  E8 0032			     call draw_string
-2    97					     DRAW_COL 5, 10, 3,	0
+2    97					     DRAW_COL 5, 10, 3,	2
 3    98	0119  BB 0005			     mov bx, 5
 3    99	011C  B9 000A			     mov cx, 10
 3   100	011F  BF 0003			     mov di, 3
 3   101
-3   102					     ; mov ax, 0
+3   102					     ; mov ax, 2
 3   103					     ; push ax
 3   104
 3   105	0122  E8 005A			     call draw_column
@@ -117,26 +117,26 @@ frame.asm
 2   107	      =0007			     Sum_y = 3 + 5 - 1
 2   108	      =0027			     Sum_x = 10	+ 30 - 1
 2   109
-2   110					     DRAW_STR 30, 10, Sum_y, 0
+2   110					     DRAW_STR 30, 10, Sum_y, 2
 3   111	0125  BB 001E			     mov  bx, 30
 3   112	0128  B9 000A			     mov  cx, 10
 3   113	012B  BF 0007			     mov  di, Sum_y
 3   114
-Turbo Assembler	 Version 4.1	    02/15/26 11:26:02	    Page 3
+Turbo Assembler	 Version 4.1	    02/15/26 11:40:00	    Page 3
 frame.asm
 
 
 
-3   115					     ; mov  ax,	0
+3   115					     ; mov  ax,	2
 3   116					     ; push ax
 3   117
 3   118	012E  E8 001A			     call draw_string
-2   119					     DRAW_COL 5, Sum_x,	3, 0
+2   119					     DRAW_COL 5, Sum_x,	3, 2
 3   120	0131  BB 0005			     mov bx, 5
 3   121	0134  B9 0027			     mov cx, Sum_x
 3   122	0137  BF 0003			     mov di, 3
 3   123
-3   124					     ; mov ax, 0
+3   124					     ; mov ax, 2
 3   125					     ; push ax
 3   126
 3   127	013A  E8 0042			     call draw_column
@@ -184,7 +184,7 @@ frame.asm
     169	0163  D1 E7 D1 E7			     shl di, 2
     170	0167  03 FB				     add di, bx
     171	0169  5B				     pop bx
-Turbo Assembler	 Version 4.1	    02/15/26 11:26:02	    Page 4
+Turbo Assembler	 Version 4.1	    02/15/26 11:40:00	    Page 4
 frame.asm
 
 
@@ -246,7 +246,7 @@ frame.asm
     226
     227	01AD  51				     push cx
     228	01AE  8B 4E 00				     mov word ptr cx, [bp]
-Turbo Assembler	 Version 4.1	    02/15/26 11:26:02	    Page 5
+Turbo Assembler	 Version 4.1	    02/15/26 11:40:00	    Page 5
 frame.asm
 
 
@@ -308,40 +308,41 @@ frame.asm
     283				     ; Start:  di - number of symbols
     284				     ;		       si - adress of string
     285				     ; Destr:  di, si, dx, ax
-Turbo Assembler	 Version 4.1	    02/15/26 11:26:02	    Page 6
+Turbo Assembler	 Version 4.1	    02/15/26 11:40:00	    Page 6
 frame.asm
 
 
 
     286				     ; Return: dx - число
     287				     ;====================================================================
-    288				     ;	     get_num_from_command proc
-    289				     ;		     cmp [si], ' '
-    290				     ;		     je	@@return
-    291				     ;		     xor ax, ax
-    292				     ;		     xor dx, dx
-    293				     ;
-    294				     ;		      @@digit:
-    295				     ;			     lodsb
-    296				     ;
-    297				     ;			     push ax
-    298				     ;			     mov ax, dx
-    299				     ;			     mul 10
-    300				     ;			     mov dx, ax
-    301				     ;			     pop ax
-    302				     ;
-    303				     ;			     add dx, ax
-    304				     ;
-    305				     ;			     cmp [si], ' '
-    306				     ;			     jne @@digit
-    307				     ;
-    308				     ;		     @return:
-    309				     ;		     ret
-    310				     ;	     endp
-    311
+    288	01EE				     get_num_from_command proc
+    289	01EE  80 3C 20				     cmp byte ptr[si], ' '
+    290	01F1  74 F8				     je	@@return
+    291	01F3  33 C0				     xor ax, ax
+    292	01F5  33 D2				     xor dx, dx
+    293
+    294	01F7					      @@digit:
+    295	01F7  AC					     lodsb
+    296
+    297	01F8  51					     push cx
+    298	01F9  8B CA					     mov cx, dx
+    299	01FB  D1 E2 D1 E2 D1 E2				     shl dx, 3
+    300	0201  03 D1					     add dx, cx
+    301	0203  03 D1					     add dx, cx
+    302	0205  59					     pop cx
+    303
+    304	0206  03 D0					     add dx, ax
+    305
+    306	0208  80 3C 20					     cmp byte ptr [si],	' '
+    307	020B  75 EA					     jne @@digit
+    308
+    309	020D					     @return:
+    310	020D  C3				     ret
+    311	020E				     endp
     312
-    313				     end     Start
-Turbo Assembler	 Version 4.1	    02/15/26 11:26:02	    Page 7
+    313
+    314				     end     Start
+Turbo Assembler	 Version 4.1	    02/15/26 11:40:00	    Page 7
 Symbol Table
 
 
@@ -351,10 +352,11 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/15/26"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "11:26:02"
+??TIME				  Text	 "11:40:00"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
 @@				  Number [DGROUP:BP-0002]
+@@DIGIT				  Near	 DGROUP:01F7
 @@RETURN			  Near	 DGROUP:01EB
 @CODE				  Text	 DGROUP
 @CODESIZE			  Text	 0
@@ -365,11 +367,13 @@ Symbol Name			  Type	 Value
 @FILENAME			  Text	 FRAME
 @INTERFACE			  Text	 000H
 @MODEL				  Text	 1
+@RETURN				  Near	 DGROUP:020D
 @STACK				  Text	 DGROUP
 @WORDSIZE			  Text	 2
 BEG				  Number 0352
 DRAW_COLUMN			  Near	 DGROUP:017F
 DRAW_STRING			  Near	 DGROUP:014B
+GET_NUM_FROM_COMMAND		  Near	 DGROUP:01EE
 L				  Near	 DGROUP:01E7
 PRINT_COLUMN			  Near	 DGROUP:01B1
 PRINT_WORD_IN_FRAME		  Near	 DGROUP:01C0
@@ -390,5 +394,5 @@ Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  01EE Word	  Public  CODE
+  _TEXT				  16  020E Word	  Public  CODE
 

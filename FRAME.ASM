@@ -230,29 +230,30 @@ Start:
 ; Destr:  di, si, dx, ax
 ; Return: dx - число
 ;====================================================================
-;	get_num_from_command proc
-;		cmp [si], ' '
-;		je @@return
-;		xor ax, ax
-;		xor dx, dx
-;
-;		 @@digit:
-;			lodsb
-;
-;			push ax
-;			mov ax, dx
-;			mul 10
-;			mov dx, ax
-;			pop ax
-;
-;			add dx, ax
-;
-;			cmp [si], ' '
-;			jne @@digit
-;
-;		@return:
-;		ret
-;	endp
+	get_num_from_command proc
+		cmp byte ptr[si], ' '
+		je @@return
+		xor ax, ax
+		xor dx, dx
+
+		 @@digit:
+			lodsb
+
+			push cx
+			mov cx, dx
+			shl dx, 3
+			add dx, cx
+			add dx, cx
+			pop cx
+
+			add dx, ax
+
+			cmp byte ptr [si], ' '
+			jne @@digit
+
+		@return:
+		ret
+	endp
 
 
 end 	Start
