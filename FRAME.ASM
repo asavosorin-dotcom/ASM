@@ -78,6 +78,12 @@ Start:
 
 	DRAW_FRAME_WORD 30, 5, 10, 3, 2
 
+	mov cl, ds:80h
+	mov si, 82h
+	;mov di, cx
+
+	call get_num_from_command
+
 	;pop bx
 ;	DRAW_STR 10, 5, 3, 1F03h
 ;	DRAW_COL 6,  10, 0, 1F03h
@@ -85,7 +91,9 @@ Start:
 ;	DRAW_STR 29, 10, 5
 ;	DRAW_COL 6,  40, 0	
 
-	call print_word_in_frame
+
+
+	; call print_word_in_frame
 
 	;DRAW_FRAME 8, 3, 1, 1, 1F03h or 8080h
 
@@ -188,7 +196,7 @@ Start:
 	draw_column endp
 ;====================================================================
 ;Start:	
-;   di - counter of symbols 
+;   cx - counter of symbols 
 ;	si - adress of string
 ;Return: ax - число
 ;====================================================================
@@ -225,7 +233,7 @@ Start:
 	endp					
 
 ;====================================================================
-; Start:  di - number of symbols
+; Start:  cx - number of symbols
 ;		  si - adress of string
 ; Destr:  di, si, dx, ax
 ; Return: dx - число
@@ -246,6 +254,7 @@ Start:
 			add dx, cx
 			pop cx
 
+			sub ax, '0'
 			add dx, ax
 
 			cmp byte ptr [si], ' '
