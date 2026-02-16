@@ -15,7 +15,7 @@ locals @@
 
 INF_T struc 
 	length dw 30
-	height dw 5
+	height dw 7
 	pos_x  dw 10
 	pos_y  dw 3
 INF_T ends
@@ -48,6 +48,8 @@ ENDM
 	
 DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 	
+	call get_num_from_command
+
 	shl dx, 1 ; arr of words
 	lea bx, Symbol_arr
 	add bx, dx
@@ -65,26 +67,20 @@ DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 	dec di
 ;===================================================================== 
 	; Sum_x = pos_x + length - 1 ; make in func
-
+	; push di
 	DRAW_STR length, pos_x, di, symbol
-
+	; pop di
+;=====================================================================
 	mov cx, pos_x
 	add cx, length
 	dec cx
+;=====================================================================
 
 	DRAW_COL height, cx, pos_y, symbol
 
 	add sp, 2
 	pop cx
  
-ENDM
-
-DRAW_FRAME_WORD macro length, height, pos_x, pos_y, symbol
-
-	call get_num_from_command ; получаем индекс в массиве символов
-	DRAW_FRAME length, height, pos_x, pos_y, symbol
-	;BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length
-
 ENDM
 
 ;очистка экрана
@@ -101,9 +97,9 @@ Start:
 	mov cl, ds:80h
 	mov si, 82h
 
-	DRAW_FRAME_WORD Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
+	DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
 
-	;call print_word_in_frame
+	call print_word_in_frame
 
 	mov ah, 4ch
 	int 21h
@@ -209,40 +205,41 @@ Start:
 ;   cx - counter of symbols 
 ;	si - adress of string
 ;Return: ax - число
-;Destr: cx, di, si
+;Destr: cx, di, si, dx
 ;====================================================================
 
-	; print_word_in_frame proc
-	; 		; push cx
-	; 		push di
-	; 		;xor cx, cx
-	; 		xor di, di  	
-	; 		;mov cl, ds:80h
-
-	; 		cmp cl, 0
-	; 		je @@return
-
-	; 		dec cl
-	; 		;mov si, 82h 
-	; 		;BEG equ 5 * 160 + 40
-	; 		mov di, cx
-	; 		shr di, 2
-	; 		shl di, 1
-	; 		neg di
-	; 		sub di, 2
-	; 		add di, BEG
-	; 		;mov di, BEG ;  
-	; 		mov ah, (1Fh or 88h) ;
-	; 		L:
-	; 			lodsb	
-	; 			stosw
-	; 			loop L
-
-	; 		@@return:
-	; 		pop di
-	; 		; pop cx 
-	; 		ret
-	; endp					
+	print_word_in_frame proc
+			; push cx
+			push di
+			;xor cx, cx
+			xor di, di  	
+			;mov cl, ds:80h
+; 
+			cmp cl, 0
+			je @@return
+; 
+			dec cl
+			;mov si, 82h 
+			;BEG equ 5 * 160 + 40
+			mov di, cx
+			shr di, 2
+			shl di, 1
+			neg di
+			sub di, 2
+			call get_middle_frame
+			add di, dx
+			;mov di, BEG ;  
+			mov ah, (1Fh or 88h) ;
+			L:
+				lodsb	
+				stosw
+				loop L
+; 
+			@@return:
+			pop di
+			; pop cx 
+			ret
+	endp					
 
 ;====================================================================
 ; Start:  cx - number of symbols
@@ -288,5 +285,51 @@ Start:
 		@@return:
 		ret
 	endp
+	
+;====================================================================
+; Start: Inf_struc
+; Destr: dx
+; Return: dx - число
+;====================================================================
 
+	get_middle_frame proc
+		push bp
+		mov bp, sp
+
+		; xor dx, dx
+
+		mov dx, Inf_frame.pos_x
+		shl dx, 1
+		add dx, Inf_frame.length
+		dec dx
+		shl dx, 1
+
+		push ax
+		mov ax, Inf_frame.pos_y
+		shl ax, 1
+		add ax, Inf_frame.height
+		dec ax
+		dec ax
+		add ax, 1
+		; shr ax, 1
+
+		;===== Умножение ax на 80=======
+		shl ax, 5
+		push bx
+		mov bx, ax
+		shl ax, 2
+		add ax, bx
+		pop bx
+		;=====================================
+
+		add dx, ax
+
+		pop ax
+
+		shr dx, 2
+		shl dx, 1
+
+		pop bp
+		ret
+	endp
 end 	Start
