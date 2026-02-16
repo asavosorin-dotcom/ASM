@@ -13,7 +13,12 @@ locals @@
 
 ; надо написать процедуру, которая считывает число из командной строки
 
-; INF struc 
+INF_T struc 
+	length dw 30
+	height dw 5
+	pos_x  dw 10
+	pos_y  dw 3
+INF_T ends
 
 DRAW_COL macro height, pos_x, pos_y, symbol
 	mov bx, height
@@ -53,11 +58,21 @@ DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 	DRAW_STR length, pos_x, pos_y, symbol
 	DRAW_COL height, pos_x, pos_y, symbol
 
-	Sum_y = pos_y + height - 1
-	Sum_x = pos_x + length - 1
+	; Sum_y = pos_y + height - 1 ; make in func
+;=====================================================================
+	mov di, pos_y
+	add di, height
+	dec di
+;===================================================================== 
+	; Sum_x = pos_x + length - 1 ; make in func
 
-	DRAW_STR length, pos_x, Sum_y, symbol 
-	DRAW_COL height, Sum_x, pos_y, symbol
+	DRAW_STR length, pos_x, di, symbol
+
+	mov cx, pos_x
+	add cx, length
+	dec cx
+
+	DRAW_COL height, cx, pos_y, symbol
 
 	add sp, 2
 	pop cx
@@ -68,7 +83,7 @@ DRAW_FRAME_WORD macro length, height, pos_x, pos_y, symbol
 
 	call get_num_from_command ; получаем индекс в массиве символов
 	DRAW_FRAME length, height, pos_x, pos_y, symbol
-	BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length
+	;BEG = (Sum_y + pos_y) / 2 * 160 + pos_x * 2 + length
 
 ENDM
 
@@ -85,26 +100,17 @@ Start:
 
 	mov cl, ds:80h
 	mov si, 82h
-	;mov di, cx
 
-	DRAW_FRAME_WORD 30, 5, 10, 3, 2
+	DRAW_FRAME_WORD Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
 
-	call print_word_in_frame
-
-	;pop bx
-;	DRAW_STR 10, 5, 3, 1F03h
-;	DRAW_COL 6,  10, 0, 1F03h
-;
-;	DRAW_STR 29, 10, 5
-;	DRAW_COL 6,  40, 0	
-
-;	DRAW_FRAME 8, 3, 1, 1, 1F03h or 8080h
+	;call print_word_in_frame
 
 	mov ah, 4ch
 	int 21h
-
+;=================================================================================================
 	Symbol_arr dw 1F03h, 4E03h, 8B55h, 04C5h
-
+	Inf_frame INF_T <> 
+;=================================================================================================
 
 	draw_string proc																																																																									 																																																																						 																																																										
 		push bp
@@ -197,6 +203,7 @@ Start:
 
 
 	draw_column endp
+
 ;====================================================================
 ;Start:	
 ;   cx - counter of symbols 
@@ -204,37 +211,38 @@ Start:
 ;Return: ax - число
 ;Destr: cx, di, si
 ;====================================================================
-	print_word_in_frame proc
-			; push cx
-			push di
-			;xor cx, cx
-			xor di, di  	
-			;mov cl, ds:80h
 
-			cmp cl, 0
-			je @@return
+	; print_word_in_frame proc
+	; 		; push cx
+	; 		push di
+	; 		;xor cx, cx
+	; 		xor di, di  	
+	; 		;mov cl, ds:80h
 
-			dec cl
-			;mov si, 82h 
-			;BEG equ 5 * 160 + 40
-			mov di, cx
-			shr di, 2
-			shl di, 1
-			neg di
-			sub di, 2
-			add di, BEG
-			;mov di, BEG ;  
-			mov ah, (1Fh or 88h) ;
-			L:
-				lodsb	
-				stosw
-				loop L
+	; 		cmp cl, 0
+	; 		je @@return
 
-			@@return:
-			pop di
-			; pop cx 
-			ret
-	endp					
+	; 		dec cl
+	; 		;mov si, 82h 
+	; 		;BEG equ 5 * 160 + 40
+	; 		mov di, cx
+	; 		shr di, 2
+	; 		shl di, 1
+	; 		neg di
+	; 		sub di, 2
+	; 		add di, BEG
+	; 		;mov di, BEG ;  
+	; 		mov ah, (1Fh or 88h) ;
+	; 		L:
+	; 			lodsb	
+	; 			stosw
+	; 			loop L
+
+	; 		@@return:
+	; 		pop di
+	; 		; pop cx 
+	; 		ret
+	; endp					
 
 ;====================================================================
 ; Start:  cx - number of symbols
@@ -279,10 +287,6 @@ Start:
 
 		@@return:
 		ret
-	endp
-
-	make_a_fill proc
-
 	endp
 
 end 	Start
