@@ -78,7 +78,7 @@ DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 
 	DRAW_COL height, cx, pos_y, symbol
 
-	add sp, 2
+	pop bx
 	pop cx
  
 ENDM
@@ -97,14 +97,23 @@ Start:
 	mov si, 82h
 
 	call get_num_from_command
-	mov Inf_frame.length, dx
+	mov  Inf_frame.length, dx
 
 	call get_num_from_command
-	mov Inf_frame.height, dx
+	mov  Inf_frame.height, dx
 
 	DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
 
+	and bx, 0ff00h
+	mov dx, bx
+
+	push cx
+	call make_fill
+	pop cx
+
+	push dx
 	call print_word_in_frame
+	pop dx
 
 	mov ah, 4ch
 	int 21h
@@ -114,9 +123,12 @@ Start:
 ;=================================================================================================
 
 	draw_string proc																																																																									 																																																																						 																																																										
+		push cx
+		push di
+		push bx
 		push bp
 		mov bp, sp
-		add bp, 4
+		add bp, 10
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;
 
@@ -126,14 +138,14 @@ Start:
 		shl cx, 1	;	
 		shl bx, 1	;
 
-	;===== Умножение смещения на 160=======
+	;===== Умножение смещения на 160 =======
 		shl di, 5 
 		push bx
 		mov bx, di
 		shl di, 2
 		add di, bx
 		pop bx
-	;=================================
+	;=======================================
 		add di, cx
 		;add bx, cx
 		
@@ -151,7 +163,9 @@ Start:
 		pop cx
 
 		pop bp
-
+		pop bx
+		pop di
+		pop cx
 		ret 
 
 	draw_string endp
@@ -215,6 +229,10 @@ Start:
 
 	print_word_in_frame proc
 			; push cx
+			push bp
+			mov bp, sp
+			add bp, 4
+
 			push di
 			;xor cx, cx
 			xor di, di  	
@@ -234,7 +252,7 @@ Start:
 			call get_middle_frame
 			add di, dx
 			;mov di, BEG ;  
-			mov ah, (1Fh or 88h) ;
+			mov ah, [bp + 1];
 			L:
 				lodsb	
 				stosw
@@ -243,6 +261,7 @@ Start:
 			@@return:
 			pop di
 			; pop cx 
+			pop bp
 			ret
 	endp					
 
@@ -338,5 +357,42 @@ Start:
 		pop bp
 		ret
 	endp
+;====================================================================
+; Start: data in struc, bx - symb
+; Destr: cx, ax
+;====================================================================
 
+	make_fill proc
+		push bp
+		mov bp, sp
+
+		mov ax, Inf_frame.height
+		sub ax, 2
+
+		push bx
+
+		mov bx, Inf_frame.length
+		sub bx, 2
+
+		mov cx, Inf_frame.pos_x
+		inc cx
+
+		mov di, Inf_frame.pos_y
+		inc di 
+
+		@@print_string:
+
+			call draw_string
+			inc di 
+
+			dec ax
+			cmp ax, 0
+			jne @@print_string
+
+		pop bx
+		pop bp
+
+		ret
+	endp
+	
 end 	Start
