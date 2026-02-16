@@ -96,30 +96,83 @@ Start:
 	mov cl, ds:80h
 	mov si, 82h
 
-	call get_num_from_command
-	mov  Inf_frame.length, dx
+	call print_mona_lisa
 
-	call get_num_from_command
-	mov  Inf_frame.height, dx
+	; call get_num_from_command
+	; mov  Inf_frame.length, dx
 
-	DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
+	; call get_num_from_command
+	; mov  Inf_frame.height, dx
 
-	and bx, 0ff00h
-	mov dx, bx
+	; DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
 
-	push cx
-	call make_fill
-	pop cx
+	; and bx, 0ff00h
+	; mov dx, bx
 
-	push dx
-	call print_word_in_frame
-	pop dx
+	; push cx
+	; call make_fill
+	; pop cx
+
+	; push dx
+	; call print_word_in_frame
+	; pop dx
 
 	mov ah, 4ch
 	int 21h
 ;=================================================================================================
-	Symbol_arr dw 1F03h, 4E03h, 8B55h, 04C5h
+	Symbol_arr   dw 1F03h, 4E03h, 8B55h, 04C5h
+; Строка 1: "o8%8888," +20 пробелов
+row1 db 04h,04h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,04h,04h 
+
+; Строка 2: "      o88%8888888." +10 пробелов
+row2 db 04h,20h,20h,20h,20h,20h,6Fh,38h,38h,25h,38h,38h,38h,38h,38h,38h,38h,2Eh,20h,20h,20h,20h,20h,20h,20h,20h,04h,04h
+
+; Строка 3: "     8'-    -:8888b" +10 пробелов
+row3 db 04h,20h,20h,20h,20h,20h,38h,27h,2Dh,20h,20h,20h,20h,2Dh,3Ah,38h,38h,38h,38h,62h,20h,20h,20h,20h,20h,20h,04h,04h
+
+; Строка 4: "    8'         8888" +10 пробелов
+row4 db 04h,20h,20h,20h,20h,38h,27h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,38h,38h,38h,38h,20h,20h,20h,20h,20h,20h,04h
+
+; Строка 5: "   d8.-=. ,==-.:888b" +8 пробелов
+row5 db 04h,20h,20h,64h,38h,2Dh,2Eh,3Dh,20h,2Ch,3Dh,3Dh,2Dh,2Eh,3Ah,38h,38h,38h,62h,20h,20h,20h,20h,20h,20h,20h,20h,20h
+
+; Строка 6: "   >8 `~` :`~' d8888" +8 пробелов
+row6 db 04h,20h,20h,3Eh,38h,20h,60h,7Eh,60h,20h,3Ah,60h,7Eh,27h,20h,64h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h,20h
+
+; Строка 7: "   88         ,88888" +9 пробелов
+row7 db 04h,20h,20h,20h,38h,38h,20h,20h,20h,20h,20h,20h,20h,20h,20h,2Ch,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
+
+; Строка 8: "   88b. `-~  :'88888" +8 пробелов
+row8 db 04h,20h,20h,20h,38h,38h,62h,2Eh,20h,60h,2Dh,7Eh,20h,20h,3Ah,27h,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
+
+; Строка 9: "   888b ~==~ .:88888" +8 пробелов
+row9 db 20h,20h,20h,20h,38h,38h,38h,62h,20h,7Eh,3Dh,3Dh,7Eh,20h,2Eh,3Ah,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
+
+; Строка 10: "   88888o--:':::8888" +8 пробелов
+row10 db 20h,20h,20h,20h,38h,38h,38h,38h,38h,6Fh,2Dh,2Dh,3Ah,27h,27h,27h,3Ah,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
+
+; Строка 11: "   `88888| :::' 8888b" +7 пробелов
+row11 db 20h,20h,20h,60h,38h,38h,38h,38h,38h,7Ch,20h,3Ah,3Ah,3Ah,27h,20h,38h,38h,38h,38h,62h, 20h,20h,20h,20h,20h,20h,20h
+
+; Строка 12: "   8888^^'       8888b" +6 пробелов
+row12 db 20h,20h,20h,20h,38h,38h,38h,38h,5Eh,5Eh,27h,20h,20h,20h,20h,20h,20h,20h,38h,38h,38h,38h,62h, 20h,20h,20h,20h,20h
+
+; Строка 13: "  d888           ,%888b." +5 пробелов
+row13 db 20h,20h,64h,38h,38h,38h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,2Ch,25h,38h,38h,38h,62h,2Eh, 20h,20h,20h,20h
+
+; Строка 14: " d88%            %%%8--'-. " +4 пробела
+row14 db 20h,64h,38h,38h,25h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,25h,25h,25h,38h,2Dh,2Dh,27h,2Dh
+
+; Строка 15: "/88:.__ ,       _%-' ---  -" +1 пробел
+row15 db 2Fh,38h,38h,3Ah,2Eh,5Fh,5Fh,20h,2Ch,20h,20h,20h,20h,20h,20h,20h,5Fh,25h,2Dh,27h,20h,2Dh,2Dh,2Dh,20h,2Dh,0Ah,20h
+
+; Строка 16: "    '''::===..-'   =  --." +3 пробела
+row16 db 20h,20h,20h,20h,27h,27h,27h,3Ah,3Ah,3Dh,3Dh,2Eh,2Dh,27h,20h,20h,20h,20h,3Dh,20h,2Dh,2Dh,2Eh,20h,20h,20h,20h,20h
 	Inf_frame INF_T <> 
+
+MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, row16, 0000h
+
+Str db 41h, 41h, 41h
 ;=================================================================================================
 
 	draw_string proc																																																																									 																																																																						 																																																										
@@ -394,5 +447,44 @@ Start:
 
 		ret
 	endp
-	
+;=======================================================================
+; Start: cx - количество символов в массиве, si - адресс начала массива, 
+; di - адресс в видеопамяти
+; Destr: ax, cx, si, di
+; 
+;=======================================================================
+
+	print_arr proc
+		mov ah, 0fh
+		@@print:
+			lodsb
+			stosw
+			loop @@print
+
+		ret
+	endp
+
+	print_mona_lisa proc
+		DRAW_FRAME 30, 17, 10, 0, 1
+
+		mov di, 22 ; (10 + 1) * 2 ; можно подшаманить с отступом
+		add di, 160 ; 4 * 160
+		lea bx, MonaLisa 
+		
+		@@mona:
+			mov si, [bx]
+			mov cx, 28
+
+			push di
+			call print_arr
+			pop di
+
+			add di, 160
+			add bx, 2
+			
+			cmp [bx], 0000h
+			jne @@mona
+
+		ret
+	endp
 end 	Start
