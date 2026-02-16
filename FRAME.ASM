@@ -3,7 +3,7 @@
 
 org 100h
 
-local @@
+locals @@
 
 ;===========================================================================
 ;DESTR: ax, bx, cx, di
@@ -12,6 +12,8 @@ local @@
 ; можно передавать аргументом символа его адрес в памяти
 
 ; надо написать процедуру, которая считывает число из командной строки
+
+; INF struc 
 
 DRAW_COL macro height, pos_x, pos_y, symbol
 	mov bx, height
@@ -96,10 +98,7 @@ Start:
 ;	DRAW_STR 29, 10, 5
 ;	DRAW_COL 6,  40, 0	
 
-
-
-
-	;DRAW_FRAME 8, 3, 1, 1, 1F03h or 8080h
+;	DRAW_FRAME 8, 3, 1, 1, 1F03h or 8080h
 
 	mov ah, 4ch
 	int 21h
@@ -207,9 +206,7 @@ Start:
 ;====================================================================
 	print_word_in_frame proc
 			; push cx
-			dec cx
 			push di
-			add si, 1 ; skip_space
 			;xor cx, cx
 			xor di, di  	
 			;mov cl, ds:80h
@@ -243,13 +240,21 @@ Start:
 ; Start:  cx - number of symbols
 ;		  si - adress of string
 ; Destr:  cx, si, dx, ax
-; Return: dx - число
+; Return: dx - число. dx = 0, если нет цифры
 ;====================================================================
 	get_num_from_command proc
-		cmp byte ptr[si], ' '
-		je @@return
-		xor ax, ax
 		xor dx, dx
+
+		cmp byte ptr [si], ' '
+		je @@return
+
+		cmp byte ptr [si], '0'
+		jb @@return
+
+		cmp byte ptr [si], '9'
+		jg @@return
+
+		xor ax, ax
 
 		 @@digit:
 			lodsb
@@ -269,9 +274,15 @@ Start:
 			cmp byte ptr [si], ' '
 			jne @@digit
 
-		@return:
+		dec cx
+		add si, 1 ; skip_space
+
+		@@return:
 		ret
 	endp
 
+	make_a_fill proc
+
+	endp
 
 end 	Start
