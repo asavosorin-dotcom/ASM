@@ -93,9 +93,14 @@ Start:
 	
 	; Подумать как можно передавать символ для всех рамок
 
-
 	mov cl, ds:80h
 	mov si, 82h
+
+	call get_num_from_command
+	mov Inf_frame.length, dx
+
+	call get_num_from_command
+	mov Inf_frame.height, dx
 
 	DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
 
@@ -285,7 +290,7 @@ Start:
 		@@return:
 		ret
 	endp
-	
+
 ;====================================================================
 ; Start: Inf_struc
 ; Destr: dx
@@ -311,7 +316,8 @@ Start:
 		dec ax
 		dec ax
 		add ax, 1
-		; shr ax, 1
+		shr ax, 1
+		shl ax, 1
 
 		;===== Умножение ax на 80=======
 		shl ax, 5
@@ -332,4 +338,5 @@ Start:
 		pop bp
 		ret
 	endp
+
 end 	Start
