@@ -4,7 +4,6 @@
 org 100h
 
 locals @@
-
 ;===========================================================================
 ;DESTR: ax, bx, cx, di
 ;===========================================================================
@@ -96,31 +95,38 @@ Start:
 	mov cl, ds:80h
 	mov si, 82h
 
-	call print_mona_lisa
+	call get_flag_from_command
+	test FLAGS, 40h
+	je @@frame
+		call print_mona_lisa
+		mov ah, 4ch
+		int 21h
 
-	; call get_num_from_command
-	; mov  Inf_frame.length, dx
-
-	; call get_num_from_command
-	; mov  Inf_frame.height, dx
-
-	; DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
-
-	; and bx, 0ff00h
-	; mov dx, bx
-
-	; push cx
-	; call make_fill
-	; pop cx
-
-	; push dx
-	; call print_word_in_frame
-	; pop dx
+	@@frame:
+	call get_num_from_command
+	mov  Inf_frame.length, dx
+; 
+	call get_num_from_command
+	mov  Inf_frame.height, dx
+; 
+	DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
+; 
+	and bx, 0ff00h
+	mov dx, bx
+; 
+	push cx
+	call make_fill
+	pop cx
+; 
+	push dx
+	call print_word_in_frame
+	pop dx
 
 	mov ah, 4ch
 	int 21h
 ;=================================================================================================
-	Symbol_arr   dw 1F03h, 4E03h, 8B55h, 04C5h
+FLAGS dw 0	
+Symbol_arr   dw 1F03h, 4E03h, 8B55h, 04C5h
 ; —трока 1: "o8%8888," +20 пробелов
 row1 db 04h,04h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,04h,04h 
 
@@ -172,7 +178,7 @@ row16 db 20h,20h,20h,20h,27h,27h,27h,3Ah,3Ah,3Dh,3Dh,2Eh,2Dh,27h,20h,20h,20h,20h
 
 MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, row16, 0000h
 
-Str db 41h, 41h, 41h
+; Str db 41h, 41h, 41h
 ;=================================================================================================
 
 	draw_string proc																																																																									 																																																																						 																																																										
@@ -487,4 +493,27 @@ Str db 41h, 41h, 41h
 
 		ret
 	endp
+
+;=======================================================================
+; Start: si - адресс начала флага
+; Destr: si
+; Notes: сдвигаетс€ указатель на строку в si 
+;=======================================================================
+
+	get_flag_from_command proc
+		cmp byte ptr [si], '-'
+		jne @@exit
+		inc si
+
+		cmp byte ptr [si], 'm'
+
+		jne @@exit
+		inc si
+		or FLAGS, 40h
+		; jmp @@exit
+
+		@@exit:
+		ret
+	endp
+
 end 	Start
