@@ -1,4 +1,4 @@
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 1
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 1
 frame.asm
 
 
@@ -60,7 +60,7 @@ frame.asm
      54					     add bx, dx
      55
      56					     push cx
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 2
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 2
 frame.asm
 
 
@@ -106,23 +106,23 @@ frame.asm
      95	0105  8A 0E 0080		     mov cl, ds:80h
      96	0109  BE 0082			     mov si, 82h
      97
-     98	010C  E8 0440			     call get_flag_from_command
+     98	010C  E8 043C			     call get_flag_from_command
      99	010F  F6 06 019Dr 40 90		     test FLAGS, 40h
     100	0115  74 07			     je	@@frame
-    101	0117  E8 03C9				     call print_mona_lisa
+    101	0117  E8 03C5				     call print_mona_lisa
     102	011A  B4 4C				     mov ah, 4ch
     103	011C  CD 21				     int 21h
     104
     105	011E				     @@frame:
-    106	011E  E8 0316			     call get_num_from_command
+    106	011E  E8 0312			     call get_num_from_command
     107	0121  85 D2			     test dx, dx
     108	0123  74 0B			     je	@@without_size
     109
     110	0125  89 16 0366r		     mov  Inf_frame.length, dx
     111
-    112	0129  E8 030B			     call get_num_from_command
+    112	0129  E8 0307			     call get_num_from_command
     113	012C  89 16 0368r		     mov  Inf_frame.height, dx
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 3
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 3
 frame.asm
 
 
@@ -132,7 +132,7 @@ frame.asm
     116				     ;
     117					     DRAW_FRAME	Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
 1   118
-1   119	0130  E8 0304			     call get_num_from_command
+1   119	0130  E8 0300			     call get_num_from_command
 1   120
 1   121	0133  D1 E2			     shl dx, 1 ; arr of	words
 1   122	0135  BB 019Er			     lea bx, Symbol_arr
@@ -149,7 +149,7 @@ frame.asm
 2   133					     ; mov  ax,	2
 2   134					     ; push ax
 2   135
-2   136	0149  E8 0244			     call draw_string
+2   136	0149  E8 0240			     call draw_string
 1   137					     DRAW_COL Inf_frame.height,	Inf_frame.pos_x, Inf_frame.pos_y, 2
 2   138	014C  8B 1E 0368r		     mov bx, Inf_frame.height
 2   139	0150  8B 0E 036Ar		     mov cx, Inf_frame.pos_x
@@ -158,7 +158,7 @@ frame.asm
 2   142					     ; mov ax, 2
 2   143					     ; push ax
 2   144
-2   145	0158  E8 026F			     call draw_column
+2   145	0158  E8 026B			     call draw_column
 1   146
 1   147					     ; Sum_y = Inf_frame.pos_y + Inf_frame.height - 1 ;	make in	func
 1   148				     ;=====================================================================
@@ -176,7 +176,7 @@ frame.asm
 2   160					     ; mov  ax,	2
 2   161					     ; push ax
 2   162
-2   163	016E  E8 021F			     call draw_string
+2   163	016E  E8 021B			     call draw_string
 1   164					     ; pop di
 1   165				     ;=====================================================================
 1   166	0171  8B 0E 036Ar		     mov cx, Inf_frame.pos_x
@@ -184,7 +184,7 @@ frame.asm
 1   168	0179  49			     dec cx
 1   169				     ;=====================================================================
 1   170
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 4
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 4
 frame.asm
 
 
@@ -197,7 +197,7 @@ frame.asm
 2   176					     ; mov ax, 2
 2   177					     ; push ax
 2   178
-2   179	0184  E8 0243			     call draw_column
+2   179	0184  E8 023F			     call draw_column
 1   180
 1   181	0187  5B			     pop bx
 1   182	0188  59			     pop cx
@@ -207,11 +207,11 @@ frame.asm
     186	018D  8B D3			     mov dx, bx
     187				     ;
     188	018F  51			     push cx
-    189	0190  E8 0321			     call make_fill
+    189	0190  E8 031D			     call make_fill
     190	0193  59			     pop cx
     191				     ;
     192	0194  52			     push dx
-    193	0195  E8 0273			     call print_word_in_frame
+    193	0195  E8 026F			     call print_word_in_frame
     194	0198  5A			     pop dx
     195
     196	0199  B4 4C			     mov ah, 4ch
@@ -221,32 +221,32 @@ frame.asm
     200	019D  00		     FLAGS db 0
     201	019E  1F03 4E03	8B55 04C5    Symbol_arr	  dw 1F03h, 4E03h, 8B55h, 04C5h
     202				     ; Строка 1: "o8%8888," +20	пробелов
-    203	01A6  04 04 20 20 20 20	20+  row1 db 04h,04h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,   +
-    204	      20 6F 38 25 38 38	38+  20h,20h,20h,20h,20h,04h,04h
+    203	01A6  20 20 20 20 20 20	20+  row1 db 20h,20h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,   +
+    204	      20 6F 38 25 38 38	38+  20h,20h,20h,20h,20h,20h,20h
     205	      38 2C 20 20 20 20	20+
-    206	      20 20 20 20 20 04	04
+    206	      20 20 20 20 20 20	20
     207
     208				     ; Строка 2: "	o88%8888888." +10 пробелов
-    209	01C2  04 20 20 20 20 20	6F+  row2 db 04h,20h,20h,20h,20h,20h,6Fh,38h,38h,25h,38h,38h,38h,38h,38h,38h,38h,2Eh,20h,20h,20h,   +
-    210	      38 38 25 38 38 38	38+  20h,20h,20h,20h,20h,04h,04h
+    209	01C2  20 20 20 20 20 20	6F+  row2 db 20h,20h,20h,20h,20h,20h,6Fh,38h,38h,25h,38h,38h,38h,38h,38h,38h,38h,2Eh,20h,20h,20h,   +
+    210	      38 38 25 38 38 38	38+  20h,20h,20h,20h,20h,20h,20h
     211	      38 38 38 2E 20 20	20+
-    212	      20 20 20 20 20 04	04
+    212	      20 20 20 20 20 20	20
     213
     214				     ; Строка 3: "     8'-    -:8888b" +10 пробелов
-    215	01DE  04 20 20 20 20 20	38+  row3 db 04h,20h,20h,20h,20h,20h,38h,27h,2Dh,20h,20h,20h,20h,2Dh,3Ah,38h,38h,38h,38h,62h,20h,   +
-    216	      27 2D 20 20 20 20	2D+  20h,20h,20h,20h,20h,04h,04h
+    215	01DE  20 20 20 20 20 20	38+  row3 db 20h,20h,20h,20h,20h,20h,38h,27h,2Dh,20h,20h,20h,20h,2Dh,3Ah,38h,38h,38h,38h,62h,20h,   +
+    216	      27 2D 20 20 20 20	2D+  20h,20h,20h,20h,20h,20h,20h
     217	      3A 38 38 38 38 62	20+
-    218	      20 20 20 20 20 04	04
+    218	      20 20 20 20 20 20	20
     219
     220				     ; Строка 4: "    8'	 8888" +10 пробелов
-    221	01FA  04 20 20 20 20 38	27+  row4 db 04h,20h,20h,20h,20h,38h,27h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,38h,38h,38h,38h,   +
-    222	      20 20 20 20 20 20	20+  20h,20h,20h,20h,20h,20h,04h
+    221	01FA  20 20 20 20 20 38	27+  row4 db 20h,20h,20h,20h,20h,38h,27h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,38h,38h,38h,38h,   +
+    222	      20 20 20 20 20 20	20+  20h,20h,20h,20h,20h,20h,20h
     223	      20 20 20 38 38 38	38+
-    224	      20 20 20 20 20 20	04
+    224	      20 20 20 20 20 20	20
     225
     226				     ; Строка 5: "   d8.-=. ,==-.:888b"	+8 пробелов
-    227	0216  04 20 20 64 38 2D	2E+  row5 db 04h,20h,20h,64h,38h,2Dh,2Eh,3Dh,20h,2Ch,3Dh,3Dh,2Dh,2Eh,3Ah,38h,38h,38h,62h,20h,20h,   +
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 5
+    227	0216  20 20 20 64 38 2D	2E+  row5 db 20h,20h,20h,64h,38h,2Dh,2Eh,3Dh,20h,2Ch,3Dh,3Dh,2Dh,2Eh,3Ah,38h,38h,38h,62h,20h,20h,   +
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 5
 frame.asm
 
 
@@ -256,19 +256,19 @@ frame.asm
     230	      20 20 20 20 20 20	20
     231
     232				     ; Строка 6: "   >8	`~` :`~' d8888"	+8 пробелов
-    233	0232  04 20 20 3E 38 20	60+  row6 db 04h,20h,20h,3Eh,38h,20h,60h,7Eh,60h,20h,3Ah,60h,7Eh,27h,20h,64h,38h,38h,38h,38h, 20h,  +
+    233	0232  20 20 20 3E 38 20	60+  row6 db 20h,20h,20h,3Eh,38h,20h,60h,7Eh,60h,20h,3Ah,60h,7Eh,27h,20h,64h,38h,38h,38h,38h, 20h,  +
     234	      7E 60 20 3A 60 7E	27+  20h,20h,20h,20h,20h,20h,20h
     235	      20 64 38 38 38 38	20+
     236	      20 20 20 20 20 20	20
     237
     238				     ; Строка 7: "   88		,88888"	+9 пробелов
-    239	024E  04 20 20 20 38 38	20+  row7 db 04h,20h,20h,20h,38h,38h,20h,20h,20h,20h,20h,20h,20h,20h,20h,2Ch,38h,38h,38h,38h,38h,   +
+    239	024E  20 20 20 20 38 38	20+  row7 db 20h,20h,20h,20h,38h,38h,20h,20h,20h,20h,20h,20h,20h,20h,20h,2Ch,38h,38h,38h,38h,38h,   +
     240	      20 20 20 20 20 20	20+  20h,20h,20h,20h,20h,20h,20h
     241	      20 2C 38 38 38 38	38+
     242	      20 20 20 20 20 20	20
     243
     244				     ; Строка 8: "   88b. `-~  :'88888"	+8 пробелов
-    245	026A  04 20 20 20 38 38	62+  row8 db 04h,20h,20h,20h,38h,38h,62h,2Eh,20h,60h,2Dh,7Eh,20h,20h,3Ah,27h,38h,38h,38h,38h,38h,   +
+    245	026A  20 20 20 20 38 38	62+  row8 db 20h,20h,20h,20h,38h,38h,62h,2Eh,20h,60h,2Dh,7Eh,20h,20h,3Ah,27h,38h,38h,38h,38h,38h,   +
     246	      2E 20 60 2D 7E 20	20+  20h,20h,20h,20h,20h,20h,20h
     247	      3A 27 38 38 38 38	38+
     248	      20 20 20 20 20 20	20
@@ -308,7 +308,7 @@ frame.asm
     282	      20 20 20 20 20 20	20+  25h,25h,38h,2Dh,2Dh,27h,2Dh
     283	      20 20 20 20 20 20	25+
     284	      25 25 38 2D 2D 27	2D
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 6
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 6
 frame.asm
 
 
@@ -328,466 +328,465 @@ frame.asm
     297	0366  001E 0007	000A 0003	     Inf_frame INF_T <>
     298
     299	036E  01A6r 01C2r 01DEr	  +  MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13,  +
-    300	      01FAr 0216r 0232r	  +  row14, row15, row16, 0000h
+    300	      01FAr 0216r 0232r	  +  row14, 0000h
     301	      024Er 026Ar 0286r	  +
     302	      02A2r 02BEr 02DAr	  +
-    303	      02F6r 0312r 032Er	  +
-    304	      034Ar 0000
-    305
-    306				     ; Str db 41h, 41h,	41h
-    307				     ;===============================================================================================
-    308				     ==
-    309
-    310	0390				     draw_string proc
-    311	0390  51				     push cx
-    312	0391  57				     push di
-    313	0392  53				     push bx
-    314	0393  55				     push bp
-    315	0394  8B EC				     mov bp, sp
-    316	0396  83 C5 0A				     add bp, 10
-    317						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
-    318						     ;mov bx, 80 ;
-    319
-    320						     ;cx pos_x
-    321						     ;di pos_y
-    322	0399  4B				     dec bx
-    323	039A  D1 E1				     shl cx, 1	     ;
-    324	039C  D1 E3				     shl bx, 1	     ;
-    325
-    326					     ;===== Умножение смещения на 160 =======
-    327	039E  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
-    328	      E7 D1 E7
-    329	03A8  53				     push bx
-    330	03A9  8B DF				     mov bx, di
-    331	03AB  D1 E7 D1 E7			     shl di, 2
-    332	03AF  03 FB				     add di, bx
-    333	03B1  5B				     pop bx
-    334					     ;=======================================
-    335	03B2  03 F9				     add di, cx
-    336						     ;add bx, cx
-    337
-    338	03B4  51				     push cx
-    339	03B5  33 C9				     xor cx, cx
-    340	03B7  8B 4E 00				     mov word ptr cx, [bp]
-    341
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 7
+    303	      02F6r 0312r 0000
+    304
+    305				     ; Str db 41h, 41h,	41h
+    306				     ;===============================================================================================
+    307				     ==
+    308
+    309	038C				     draw_string proc
+    310	038C  51				     push cx
+    311	038D  57				     push di
+    312	038E  53				     push bx
+    313	038F  55				     push bp
+    314	0390  8B EC				     mov bp, sp
+    315	0392  83 C5 0A				     add bp, 10
+    316						     ;mov word ptr es: [bx+160*4l + 80], (4e03h	or 8000h)
+    317						     ;mov bx, 80 ;
+    318
+    319						     ;cx pos_x
+    320						     ;di pos_y
+    321	0395  4B				     dec bx
+    322	0396  D1 E1				     shl cx, 1	     ;
+    323	0398  D1 E3				     shl bx, 1	     ;
+    324
+    325					     ;===== Умножение смещения на 160 =======
+    326	039A  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
+    327	      E7 D1 E7
+    328	03A4  53				     push bx
+    329	03A5  8B DF				     mov bx, di
+    330	03A7  D1 E7 D1 E7			     shl di, 2
+    331	03AB  03 FB				     add di, bx
+    332	03AD  5B				     pop bx
+    333					     ;=======================================
+    334	03AE  03 F9				     add di, cx
+    335						     ;add bx, cx
+    336
+    337	03B0  51				     push cx
+    338	03B1  33 C9				     xor cx, cx
+    339	03B3  8B 4E 00				     mov word ptr cx, [bp]
+    340
+    341	03B6					     string:
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 7
 frame.asm
 
 
 
-    342	03BA					     string:
-    343	03BA  26: 89 09					     mov word ptr es:[bx + di],	cx
-    344	03BD  4B					     dec bx
-    345	03BE  4B					     dec bx
-    346	03BF  83 FB 00					     cmp bx, 0
-    347	03C2  7D F6					     jge string
-    348
-    349	03C4  59				     pop cx
-    350
-    351	03C5  5D				     pop bp
-    352	03C6  5B				     pop bx
-    353	03C7  5F				     pop di
-    354	03C8  59				     pop cx
-    355	03C9  C3				     ret
-    356
-    357	03CA				     draw_string endp
-    358
-    359	03CA				     draw_column proc
-    360	03CA  55				     push bp
-    361	03CB  8B EC				     mov bp, sp
-    362	03CD  83 C5 04				     add bp, 4 ; пропускаем адрес возврата
-    363
-    364						     ;cx pos_x
-    365						     ;di pos_y
-    366	03D0  4B				     dec bx
-    367	03D1  D1 E1				     shl cx, 1	     ; 2 байта на символ
-    368	03D3  D1 E3				     shl bx, 1	     ; 2 байта на символ
-    369
-    370						     ;===== Умножение смещения y на 160=======
-    371	03D5  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
-    372	      E7 D1 E7
-    373	03DF  53				     push bx
-    374	03E0  8B DF				     mov bx, di
-    375	03E2  D1 E7 D1 E7			     shl di, 2
-    376	03E6  03 FB				     add di, bx
-    377	03E8  5B				     pop bx
-    378						     ;=====================================
-    379
-    380	03E9  50				     push ax
-    381	03EA  51				     push cx
-    382	03EB  8B C3				     mov ax, bx
-    383	03ED  B9 0050				     mov cx, 80
-    384	03F0  F7 E1				     mul cx
-    385	03F2  8B D8				     mov bx, ax
-    386	03F4  59				     pop cx
-    387	03F5  58				     pop ax
-    388
-    389	03F6  03 F9				     add di, cx
-    390
-    391	03F8  51				     push cx
-    392	03F9  8B 4E 00				     mov word ptr cx, [bp]
-    393
-    394	03FC					     print_column:
-    395	03FC  26: 89 09					     mov word ptr es:[bx + di],	cx
-    396	03FF  81 EB 00A0				     sub bx, 160
-    397							     ;dec bx
-    398	0403  83 FB 00					     cmp bx, 0
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 8
+    342	03B6  26: 89 09					     mov word ptr es:[bx + di],	cx
+    343	03B9  4B					     dec bx
+    344	03BA  4B					     dec bx
+    345	03BB  83 FB 00					     cmp bx, 0
+    346	03BE  7D F6					     jge string
+    347
+    348	03C0  59				     pop cx
+    349
+    350	03C1  5D				     pop bp
+    351	03C2  5B				     pop bx
+    352	03C3  5F				     pop di
+    353	03C4  59				     pop cx
+    354	03C5  C3				     ret
+    355
+    356	03C6				     draw_string endp
+    357
+    358	03C6				     draw_column proc
+    359	03C6  55				     push bp
+    360	03C7  8B EC				     mov bp, sp
+    361	03C9  83 C5 04				     add bp, 4 ; пропускаем адрес возврата
+    362
+    363						     ;cx pos_x
+    364						     ;di pos_y
+    365	03CC  4B				     dec bx
+    366	03CD  D1 E1				     shl cx, 1	     ; 2 байта на символ
+    367	03CF  D1 E3				     shl bx, 1	     ; 2 байта на символ
+    368
+    369						     ;===== Умножение смещения y на 160=======
+    370	03D1  D1 E7 D1 E7 D1 E7	D1+		     shl di, 5
+    371	      E7 D1 E7
+    372	03DB  53				     push bx
+    373	03DC  8B DF				     mov bx, di
+    374	03DE  D1 E7 D1 E7			     shl di, 2
+    375	03E2  03 FB				     add di, bx
+    376	03E4  5B				     pop bx
+    377						     ;=====================================
+    378
+    379	03E5  50				     push ax
+    380	03E6  51				     push cx
+    381	03E7  8B C3				     mov ax, bx
+    382	03E9  B9 0050				     mov cx, 80
+    383	03EC  F7 E1				     mul cx
+    384	03EE  8B D8				     mov bx, ax
+    385	03F0  59				     pop cx
+    386	03F1  58				     pop ax
+    387
+    388	03F2  03 F9				     add di, cx
+    389
+    390	03F4  51				     push cx
+    391	03F5  8B 4E 00				     mov word ptr cx, [bp]
+    392
+    393	03F8					     print_column:
+    394	03F8  26: 89 09					     mov word ptr es:[bx + di],	cx
+    395	03FB  81 EB 00A0				     sub bx, 160
+    396							     ;dec bx
+    397	03FF  83 FB 00					     cmp bx, 0
+    398	0402  7D F4					     jge print_column
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 8
 frame.asm
 
 
 
-    399	0406  7D F4					     jge print_column
-    400
-    401	0408  59				     pop cx
-    402	0409  5D				     pop bp
-    403
-    404	040A  C3				     ret
+    399
+    400	0404  59				     pop cx
+    401	0405  5D				     pop bp
+    402
+    403	0406  C3				     ret
+    404
     405
-    406
-    407	040B				     draw_column endp
-    408
-    409				     ;====================================================================
-    410				     ;Start:
-    411				     ;	 cx - counter of symbols
-    412				     ;	     si	- adress of string
-    413				     ;Return: ax - число
-    414				     ;Destr: cx, di, si, dx
-    415				     ;====================================================================
-    416
-    417	040B				     print_word_in_frame proc
-    418							     ; push cx
-    419	040B  55					     push bp
-    420	040C  8B EC					     mov bp, sp
-    421	040E  83 C5 04					     add bp, 4
-    422
-    423	0411  57					     push di
-    424							     ;xor cx, cx
-    425	0412  33 FF					     xor di, di
-    426							     ;mov cl, ds:80h
-    427				     ;
-    428	0414  80 F9 00					     cmp cl, 0
-    429	0417  74 1B					     je	@@return
-    430				     ;
-    431	0419  FE C9					     dec cl
-    432							     ;mov si, 82h
-    433							     ;BEG equ 5	* 160 +	40
-    434	041B  8B F9					     mov di, cx
-    435	041D  D1 EF D1 EF				     shr di, 2
-    436	0421  D1 E7					     shl di, 1
-    437	0423  F7 DF					     neg di
-    438	0425  83 EF 02					     sub di, 2
-    439	0428  E8 0047					     call get_middle_frame
-    440	042B  03 FA					     add di, dx
-    441							     ;mov di, BEG ;  
-    442	042D  8A 66 01					     mov ah, [bp + 1];
-    443	0430						     L:
-    444	0430  AC						     lodsb
-    445	0431  AB						     stosw
-    446	0432  E2 FC						     loop L
-    447				     ;
-    448	0434						     @@return:
-    449	0434  5F					     pop di
-    450							     ; pop cx
-    451	0435  5D					     pop bp
-    452	0436  C3					     ret
-    453	0437				     endp
-    454
-    455				     ;====================================================================
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 9
+    406	0407				     draw_column endp
+    407
+    408				     ;====================================================================
+    409				     ;Start:
+    410				     ;	 cx - counter of symbols
+    411				     ;	     si	- adress of string
+    412				     ;Return: ax - число
+    413				     ;Destr: cx, di, si, dx
+    414				     ;====================================================================
+    415
+    416	0407				     print_word_in_frame proc
+    417							     ; push cx
+    418	0407  55					     push bp
+    419	0408  8B EC					     mov bp, sp
+    420	040A  83 C5 04					     add bp, 4
+    421
+    422	040D  57					     push di
+    423							     ;xor cx, cx
+    424	040E  33 FF					     xor di, di
+    425							     ;mov cl, ds:80h
+    426				     ;
+    427	0410  80 F9 00					     cmp cl, 0
+    428	0413  74 1B					     je	@@return
+    429				     ;
+    430	0415  FE C9					     dec cl
+    431							     ;mov si, 82h
+    432							     ;BEG equ 5	* 160 +	40
+    433	0417  8B F9					     mov di, cx
+    434	0419  D1 EF D1 EF				     shr di, 2
+    435	041D  D1 E7					     shl di, 1
+    436	041F  F7 DF					     neg di
+    437	0421  83 EF 02					     sub di, 2
+    438	0424  E8 0047					     call get_middle_frame
+    439	0427  03 FA					     add di, dx
+    440							     ;mov di, BEG ;  
+    441	0429  8A 66 01					     mov ah, [bp + 1];
+    442	042C						     L:
+    443	042C  AC						     lodsb
+    444	042D  AB						     stosw
+    445	042E  E2 FC						     loop L
+    446				     ;
+    447	0430						     @@return:
+    448	0430  5F					     pop di
+    449							     ; pop cx
+    450	0431  5D					     pop bp
+    451	0432  C3					     ret
+    452	0433				     endp
+    453
+    454				     ;====================================================================
+    455				     ; Start:  cx - number of symbols
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 9
 frame.asm
 
 
 
-    456				     ; Start:  cx - number of symbols
-    457				     ;		       si - adress of string
-    458				     ; Destr:  cx, si, dx, ax
-    459				     ; Return: dx - число. dx =	0, если	нет цифры
-    460				     ;====================================================================
-    461	0437				     get_num_from_command proc
-    462	0437  33 D2				     xor dx, dx
-    463
-    464	0439  80 3C 20				     cmp byte ptr [si],	' '
-    465	043C  74 33				     je	@@return
-    466
-    467	043E  80 3C 30				     cmp byte ptr [si],	'0'
-    468	0441  72 2E				     jb	@@return
-    469
-    470	0443  80 3C 39				     cmp byte ptr [si],	'9'
-    471	0446  7F 29				     jg	@@return
-    472
-    473	0448  33 C0				     xor ax, ax
-    474
-    475	044A					      @@digit:
-    476	044A  AC					     lodsb
-    477
-    478	044B  51					     push cx
-    479	044C  8B CA					     mov cx, dx
-    480	044E  D1 E2 D1 E2 D1 E2				     shl dx, 3
-    481	0454  03 D1					     add dx, cx
-    482	0456  03 D1					     add dx, cx
-    483	0458  59					     pop cx
-    484
-    485							     ;sub ax, '0'
-    486	0459  24 0F					     and al, 0fh
-    487	045B  03 D0					     add dx, ax
-    488	045D  49					     dec cx
-    489
-    490	045E  80 3C 30					     cmp byte ptr [si],	'0'
-    491	0461  76 0A					     jbe @@end_cicle
-    492
-    493	0463  80 3C 39					     cmp byte ptr [si],	'9'
-    494	0466  7D 05					     jge @@end_cicle
-    495
-    496	0468  80 3C 20					     cmp byte ptr [si],	' '
-    497	046B  75 DD					     jne @@digit
-    498
-    499	046D					     @@end_cicle:
-    500
-    501	046D  49				     dec cx
-    502	046E  83 C6 01				     add si, 1 ; skip_space
-    503
-    504	0471					     @@return:
-    505	0471  C3				     ret
-    506	0472				     endp
-    507
-    508				     ;====================================================================
-    509				     ; Start: Inf_struc
-    510				     ; Destr: dx
-    511				     ; Return: dx - число
-    512				     ;====================================================================
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 10
+    456				     ;		       si - adress of string
+    457				     ; Destr:  cx, si, dx, ax
+    458				     ; Return: dx - число. dx =	0, если	нет цифры
+    459				     ;====================================================================
+    460	0433				     get_num_from_command proc
+    461	0433  33 D2				     xor dx, dx
+    462
+    463	0435  80 3C 20				     cmp byte ptr [si],	' '
+    464	0438  74 33				     je	@@return
+    465
+    466	043A  80 3C 30				     cmp byte ptr [si],	'0'
+    467	043D  72 2E				     jb	@@return
+    468
+    469	043F  80 3C 39				     cmp byte ptr [si],	'9'
+    470	0442  7F 29				     jg	@@return
+    471
+    472	0444  33 C0				     xor ax, ax
+    473
+    474	0446					      @@digit:
+    475	0446  AC					     lodsb
+    476
+    477	0447  51					     push cx
+    478	0448  8B CA					     mov cx, dx
+    479	044A  D1 E2 D1 E2 D1 E2				     shl dx, 3
+    480	0450  03 D1					     add dx, cx
+    481	0452  03 D1					     add dx, cx
+    482	0454  59					     pop cx
+    483
+    484							     ;sub ax, '0'
+    485	0455  24 0F					     and al, 0fh
+    486	0457  03 D0					     add dx, ax
+    487	0459  49					     dec cx
+    488
+    489	045A  80 3C 30					     cmp byte ptr [si],	'0'
+    490	045D  76 0A					     jbe @@end_cicle
+    491
+    492	045F  80 3C 39					     cmp byte ptr [si],	'9'
+    493	0462  7D 05					     jge @@end_cicle
+    494
+    495	0464  80 3C 20					     cmp byte ptr [si],	' '
+    496	0467  75 DD					     jne @@digit
+    497
+    498	0469					     @@end_cicle:
+    499
+    500	0469  49				     dec cx
+    501	046A  83 C6 01				     add si, 1 ; skip_space
+    502
+    503	046D					     @@return:
+    504	046D  C3				     ret
+    505	046E				     endp
+    506
+    507				     ;====================================================================
+    508				     ; Start: Inf_struc
+    509				     ; Destr: dx
+    510				     ; Return: dx - число
+    511				     ;====================================================================
+    512
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 10
 frame.asm
 
 
 
-    513
-    514	0472				     get_middle_frame proc
-    515	0472  55				     push bp
-    516	0473  8B EC				     mov bp, sp
-    517
-    518						     ; xor dx, dx
-    519
-    520	0475  8B 16 036Ar			     mov dx, Inf_frame.pos_x
-    521	0479  D1 E2				     shl dx, 1
-    522	047B  03 16 0366r			     add dx, Inf_frame.length
-    523	047F  4A				     dec dx
-    524	0480  D1 E2				     shl dx, 1
-    525
-    526	0482  50				     push ax
-    527	0483  A1 036Cr				     mov ax, Inf_frame.pos_y
-    528	0486  D1 E0				     shl ax, 1
-    529	0488  03 06 0368r			     add ax, Inf_frame.height
-    530	048C  48				     dec ax
-    531	048D  48				     dec ax
-    532	048E  05 0001				     add ax, 1
-    533	0491  D1 E8				     shr ax, 1
-    534	0493  D1 E0				     shl ax, 1
-    535
-    536						     ;===== Умножение ax на 80=======
-    537	0495  D1 E0 D1 E0 D1 E0	D1+		     shl ax, 5
-    538	      E0 D1 E0
-    539	049F  53				     push bx
-    540	04A0  8B D8				     mov bx, ax
-    541	04A2  D1 E0 D1 E0			     shl ax, 2
-    542	04A6  03 C3				     add ax, bx
-    543	04A8  5B				     pop bx
-    544						     ;=====================================
-    545
-    546	04A9  03 D0				     add dx, ax
-    547
-    548	04AB  58				     pop ax
-    549
-    550	04AC  D1 EA D1 EA			     shr dx, 2
-    551	04B0  D1 E2				     shl dx, 1
-    552
-    553	04B2  5D				     pop bp
-    554	04B3  C3				     ret
-    555	04B4				     endp
-    556				     ;====================================================================
-    557				     ; Start: data in struc, bx	- symb
-    558				     ; Destr: cx, ax
-    559				     ;====================================================================
-    560
-    561	04B4				     make_fill proc
-    562	04B4  55				     push bp
-    563	04B5  8B EC				     mov bp, sp
-    564
-    565	04B7  A1 0368r				     mov ax, Inf_frame.height
-    566	04BA  2D 0002				     sub ax, 2
-    567
-    568	04BD  53				     push bx
-    569
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 11
+    513	046E				     get_middle_frame proc
+    514	046E  55				     push bp
+    515	046F  8B EC				     mov bp, sp
+    516
+    517						     ; xor dx, dx
+    518
+    519	0471  8B 16 036Ar			     mov dx, Inf_frame.pos_x
+    520	0475  D1 E2				     shl dx, 1
+    521	0477  03 16 0366r			     add dx, Inf_frame.length
+    522	047B  4A				     dec dx
+    523	047C  D1 E2				     shl dx, 1
+    524
+    525	047E  50				     push ax
+    526	047F  A1 036Cr				     mov ax, Inf_frame.pos_y
+    527	0482  D1 E0				     shl ax, 1
+    528	0484  03 06 0368r			     add ax, Inf_frame.height
+    529	0488  48				     dec ax
+    530	0489  48				     dec ax
+    531	048A  05 0001				     add ax, 1
+    532	048D  D1 E8				     shr ax, 1
+    533	048F  D1 E0				     shl ax, 1
+    534
+    535						     ;===== Умножение ax на 80=======
+    536	0491  D1 E0 D1 E0 D1 E0	D1+		     shl ax, 5
+    537	      E0 D1 E0
+    538	049B  53				     push bx
+    539	049C  8B D8				     mov bx, ax
+    540	049E  D1 E0 D1 E0			     shl ax, 2
+    541	04A2  03 C3				     add ax, bx
+    542	04A4  5B				     pop bx
+    543						     ;=====================================
+    544
+    545	04A5  03 D0				     add dx, ax
+    546
+    547	04A7  58				     pop ax
+    548
+    549	04A8  D1 EA D1 EA			     shr dx, 2
+    550	04AC  D1 E2				     shl dx, 1
+    551
+    552	04AE  5D				     pop bp
+    553	04AF  C3				     ret
+    554	04B0				     endp
+    555				     ;====================================================================
+    556				     ; Start: data in struc, bx	- symb
+    557				     ; Destr: cx, ax
+    558				     ;====================================================================
+    559
+    560	04B0				     make_fill proc
+    561	04B0  55				     push bp
+    562	04B1  8B EC				     mov bp, sp
+    563
+    564	04B3  A1 0368r				     mov ax, Inf_frame.height
+    565	04B6  2D 0002				     sub ax, 2
+    566
+    567	04B9  53				     push bx
+    568
+    569	04BA  8B 1E 0366r			     mov bx, Inf_frame.length
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 11
 frame.asm
 
 
 
-    570	04BE  8B 1E 0366r			     mov bx, Inf_frame.length
-    571	04C2  83 EB 02				     sub bx, 2
-    572
-    573	04C5  8B 0E 036Ar			     mov cx, Inf_frame.pos_x
-    574	04C9  41				     inc cx
-    575
-    576	04CA  8B 3E 036Cr			     mov di, Inf_frame.pos_y
-    577	04CE  47				     inc di
-    578
-    579	04CF					     @@print_string:
-    580
-    581	04CF  E8 FEBE					     call draw_string
-    582	04D2  47					     inc di
-    583
-    584	04D3  48					     dec ax
-    585	04D4  3D 0000					     cmp ax, 0
-    586	04D7  75 F6					     jne @@print_string
-    587
-    588	04D9  5B				     pop bx
-    589	04DA  5D				     pop bp
-    590
-    591	04DB  C3				     ret
-    592	04DC				     endp
-    593				     ;=======================================================================
-    594				     ; Start: cx - количество символов в массиве, si - адресс начала массива,
-    595				     ; di - адресс в видеопамяти
-    596				     ; Destr: ax, cx, si, di
-    597				     ;
-    598				     ;=======================================================================
-    599
-    600	04DC				     print_arr proc
-    601	04DC  B4 0F				     mov ah, 0fh
-    602	04DE					     @@print:
-    603	04DE  AC					     lodsb
-    604	04DF  AB					     stosw
-    605	04E0  E2 FC					     loop @@print
-    606
-    607	04E2  C3				     ret
-    608	04E3				     endp
-    609
-    610	04E3				     print_mona_lisa proc
-    611						     DRAW_FRAME	30, 17,	10, 0, 1
-1   612
-1   613	04E3  E8 FF51			     call get_num_from_command
-1   614
-1   615	04E6  D1 E2			     shl dx, 1 ; arr of	words
-1   616	04E8  BB 019Er			     lea bx, Symbol_arr
-1   617	04EB  03 DA			     add bx, dx
-1   618
-1   619	04ED  51			     push cx
-1   620	04EE  FF 37			     push [bx]
-1   621
-1   622					     DRAW_STR 30, 10, 0, 1
-2   623	04F0  BB 001E			     mov  bx, 30
-2   624	04F3  B9 000A			     mov  cx, 10
-2   625	04F6  BF 0000			     mov  di, 0
-2   626
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 12
+    570	04BE  83 EB 02				     sub bx, 2
+    571
+    572	04C1  8B 0E 036Ar			     mov cx, Inf_frame.pos_x
+    573	04C5  41				     inc cx
+    574
+    575	04C6  8B 3E 036Cr			     mov di, Inf_frame.pos_y
+    576	04CA  47				     inc di
+    577
+    578	04CB					     @@print_string:
+    579
+    580	04CB  E8 FEBE					     call draw_string
+    581	04CE  47					     inc di
+    582
+    583	04CF  48					     dec ax
+    584	04D0  3D 0000					     cmp ax, 0
+    585	04D3  75 F6					     jne @@print_string
+    586
+    587	04D5  5B				     pop bx
+    588	04D6  5D				     pop bp
+    589
+    590	04D7  C3				     ret
+    591	04D8				     endp
+    592				     ;=======================================================================
+    593				     ; Start: cx - количество символов в массиве, si - адресс начала массива,
+    594				     ; di - адресс в видеопамяти
+    595				     ; Destr: ax, cx, si, di
+    596				     ;
+    597				     ;=======================================================================
+    598
+    599	04D8				     print_arr proc
+    600	04D8  B4 0F				     mov ah, 0fh
+    601	04DA					     @@print:
+    602	04DA  AC					     lodsb
+    603	04DB  AB					     stosw
+    604	04DC  E2 FC					     loop @@print
+    605
+    606	04DE  C3				     ret
+    607	04DF				     endp
+    608
+    609	04DF				     print_mona_lisa proc
+    610						     DRAW_FRAME	30, 16,	10, 0, 1
+1   611
+1   612	04DF  E8 FF51			     call get_num_from_command
+1   613
+1   614	04E2  D1 E2			     shl dx, 1 ; arr of	words
+1   615	04E4  BB 019Er			     lea bx, Symbol_arr
+1   616	04E7  03 DA			     add bx, dx
+1   617
+1   618	04E9  51			     push cx
+1   619	04EA  FF 37			     push [bx]
+1   620
+1   621					     DRAW_STR 30, 10, 0, 1
+2   622	04EC  BB 001E			     mov  bx, 30
+2   623	04EF  B9 000A			     mov  cx, 10
+2   624	04F2  BF 0000			     mov  di, 0
+2   625
+2   626					     ; mov  ax,	1
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 12
 frame.asm
 
 
 
-2   627					     ; mov  ax,	1
-2   628					     ; push ax
-2   629
-2   630	04F9  E8 FE94			     call draw_string
-1   631					     DRAW_COL 17, 10, 0, 1
-2   632	04FC  BB 0011			     mov bx, 17
-2   633	04FF  B9 000A			     mov cx, 10
-2   634	0502  BF 0000			     mov di, 0
-2   635
-2   636					     ; mov ax, 1
-2   637					     ; push ax
-2   638
-2   639	0505  E8 FEC2			     call draw_column
-1   640
-1   641					     ; Sum_y = 0 + 17 -	1 ; make in func
-1   642				     ;=====================================================================
-1   643	0508  BF 0000			     mov di, 0
-1   644	050B  83 C7 11			     add di, 17
-1   645	050E  4F			     dec di
-1   646				     ;=====================================================================
-1   647					     ; Sum_x = 10 + 30 - 1 ; make in func
-1   648					     ; push di
-1   649					     DRAW_STR 30, 10, di, 1
-2   650	050F  BB 001E			     mov  bx, 30
-2   651	0512  B9 000A			     mov  cx, 10
-2   652	0515  8B FF			     mov  di, di
-2   653
-2   654					     ; mov  ax,	1
-2   655					     ; push ax
-2   656
-2   657	0517  E8 FE76			     call draw_string
-1   658					     ; pop di
-1   659				     ;=====================================================================
-1   660	051A  B9 000A			     mov cx, 10
-1   661	051D  83 C1 1E			     add cx, 30
-1   662	0520  49			     dec cx
-1   663				     ;=====================================================================
-1   664
-1   665					     DRAW_COL 17, cx, 0, 1
-2   666	0521  BB 0011			     mov bx, 17
-2   667	0524  8B C9			     mov cx, cx
-2   668	0526  BF 0000			     mov di, 0
-2   669
-2   670					     ; mov ax, 1
-2   671					     ; push ax
-2   672
-2   673	0529  E8 FE9E			     call draw_column
-1   674
-1   675	052C  5B			     pop bx
-1   676	052D  59			     pop cx
-1   677
-    678
-    679	052E  BF 0016				     mov di, 22	; (10 +	1) * 2 ; можно подшаманить с отступом
-    680	0531  81 C7 00A0			     add di, 160 ; 4 * 160
-    681	0535  BB 036Er				     lea bx, MonaLisa
-    682
-    683	0538					     @@mona:
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 13
+2   627					     ; push ax
+2   628
+2   629	04F5  E8 FE94			     call draw_string
+1   630					     DRAW_COL 16, 10, 0, 1
+2   631	04F8  BB 0010			     mov bx, 16
+2   632	04FB  B9 000A			     mov cx, 10
+2   633	04FE  BF 0000			     mov di, 0
+2   634
+2   635					     ; mov ax, 1
+2   636					     ; push ax
+2   637
+2   638	0501  E8 FEC2			     call draw_column
+1   639
+1   640					     ; Sum_y = 0 + 16 -	1 ; make in func
+1   641				     ;=====================================================================
+1   642	0504  BF 0000			     mov di, 0
+1   643	0507  83 C7 10			     add di, 16
+1   644	050A  4F			     dec di
+1   645				     ;=====================================================================
+1   646					     ; Sum_x = 10 + 30 - 1 ; make in func
+1   647					     ; push di
+1   648					     DRAW_STR 30, 10, di, 1
+2   649	050B  BB 001E			     mov  bx, 30
+2   650	050E  B9 000A			     mov  cx, 10
+2   651	0511  8B FF			     mov  di, di
+2   652
+2   653					     ; mov  ax,	1
+2   654					     ; push ax
+2   655
+2   656	0513  E8 FE76			     call draw_string
+1   657					     ; pop di
+1   658				     ;=====================================================================
+1   659	0516  B9 000A			     mov cx, 10
+1   660	0519  83 C1 1E			     add cx, 30
+1   661	051C  49			     dec cx
+1   662				     ;=====================================================================
+1   663
+1   664					     DRAW_COL 16, cx, 0, 1
+2   665	051D  BB 0010			     mov bx, 16
+2   666	0520  8B C9			     mov cx, cx
+2   667	0522  BF 0000			     mov di, 0
+2   668
+2   669					     ; mov ax, 1
+2   670					     ; push ax
+2   671
+2   672	0525  E8 FE9E			     call draw_column
+1   673
+1   674	0528  5B			     pop bx
+1   675	0529  59			     pop cx
+1   676
+    677
+    678	052A  BF 0016				     mov di, 22	; (10 +	1) * 2 ; можно подшаманить с отступом
+    679	052D  81 C7 00A0			     add di, 160 ; 4 * 160
+    680	0531  BB 036Er				     lea bx, MonaLisa
+    681
+    682	0534					     @@mona:
+    683	0534  8B 37					     mov si, [bx]
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 13
 frame.asm
 
 
 
-    684	0538  8B 37					     mov si, [bx]
-    685	053A  B9 001C					     mov cx, 28
-    686
-    687	053D  57					     push di
-    688	053E  E8 FF9B					     call print_arr
-    689	0541  5F					     pop di
-    690
-    691	0542  81 C7 00A0				     add di, 160
-    692	0546  83 C3 02					     add bx, 2
-    693
-    694	0549  83 3F 00					     cmp [bx], 0000h
+    684	0536  B9 001C					     mov cx, 28
+    685
+    686	0539  57					     push di
+    687	053A  E8 FF9B					     call print_arr
+    688	053D  5F					     pop di
+    689
+    690	053E  81 C7 00A0				     add di, 160
+    691	0542  83 C3 02					     add bx, 2
+    692
+    693	0545  83 3F 00					     cmp [bx], 0000h
 *Warning* frame.asm(504) Argument needs	type override
-    695	054C  75 EA					     jne @@mona
-    696
-    697	054E  C3				     ret
-    698	054F				     endp
-    699
-    700				     ;=======================================================================
-    701				     ; Start: si - адресс начала флага
-    702				     ; Destr: si
-    703				     ; Notes: сдвигается указатель на строку в si
-    704				     ;=======================================================================
-    705
-    706	054F				     get_flag_from_command proc
-    707	054F  80 3C 2D				     cmp byte ptr [si],	'-'
-    708	0552  75 0C				     jne @@exit
-    709	0554  46				     inc si
-    710
-    711	0555  80 3C 6D				     cmp byte ptr [si],	'm'
-    712
-    713	0558  75 06				     jne @@exit
-    714	055A  46				     inc si
-    715	055B  80 0E 019Dr 40			     or	FLAGS, 40h
-    716						     ; jmp @@exit
-    717
-    718	0560					     @@exit:
-    719	0560  C3				     ret
-    720	0561				     endp
-    721
-    722				     end     Start
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 14
+    694	0548  75 EA					     jne @@mona
+    695
+    696	054A  C3				     ret
+    697	054B				     endp
+    698
+    699				     ;=======================================================================
+    700				     ; Start: si - адресс начала флага
+    701				     ; Destr: si
+    702				     ; Notes: сдвигается указатель на строку в si
+    703				     ;=======================================================================
+    704
+    705	054B				     get_flag_from_command proc
+    706	054B  80 3C 2D				     cmp byte ptr [si],	'-'
+    707	054E  75 0C				     jne @@exit
+    708	0550  46				     inc si
+    709
+    710	0551  80 3C 6D				     cmp byte ptr [si],	'm'
+    711
+    712	0554  75 06				     jne @@exit
+    713	0556  46				     inc si
+    714	0557  80 0E 019Dr 40			     or	FLAGS, 40h
+    715						     ; jmp @@exit
+    716
+    717	055C					     @@exit:
+    718	055C  C3				     ret
+    719	055D				     endp
+    720
+    721				     end     Start
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 14
 Symbol Table
 
 
@@ -797,18 +796,18 @@ Symbol Name			  Type	 Value
 
 ??DATE				  Text	 "02/20/26"
 ??FILENAME			  Text	 "frame	  "
-??TIME				  Text	 "14:47:46"
+??TIME				  Text	 "14:53:35"
 ??VERSION			  Number 040A
 @32BIT				  Text	 0
-@@DIGIT				  Near	 DGROUP:044A
-@@END_CICLE			  Near	 DGROUP:046D
-@@EXIT				  Near	 DGROUP:0560
+@@DIGIT				  Near	 DGROUP:0446
+@@END_CICLE			  Near	 DGROUP:0469
+@@EXIT				  Near	 DGROUP:055C
 @@FRAME				  Near	 DGROUP:011E
-@@MONA				  Near	 DGROUP:0538
-@@PRINT				  Near	 DGROUP:04DE
-@@PRINT_STRING			  Near	 DGROUP:04CF
-@@RETURN			  Near	 DGROUP:0434
-@@RETURN			  Near	 DGROUP:0471
+@@MONA				  Near	 DGROUP:0534
+@@PRINT				  Near	 DGROUP:04DA
+@@PRINT_STRING			  Near	 DGROUP:04CB
+@@RETURN			  Near	 DGROUP:0430
+@@RETURN			  Near	 DGROUP:046D
 @@WITHOUT_SIZE			  Near	 DGROUP:0130
 @CODE				  Text	 DGROUP
 @CODESIZE			  Text	 0
@@ -821,20 +820,20 @@ Symbol Name			  Type	 Value
 @MODEL				  Text	 1
 @STACK				  Text	 DGROUP
 @WORDSIZE			  Text	 2
-DRAW_COLUMN			  Near	 DGROUP:03CA
-DRAW_STRING			  Near	 DGROUP:0390
+DRAW_COLUMN			  Near	 DGROUP:03C6
+DRAW_STRING			  Near	 DGROUP:038C
 FLAGS				  Byte	 DGROUP:019D
-GET_FLAG_FROM_COMMAND		  Near	 DGROUP:054F
-GET_MIDDLE_FRAME		  Near	 DGROUP:0472
-GET_NUM_FROM_COMMAND		  Near	 DGROUP:0437
+GET_FLAG_FROM_COMMAND		  Near	 DGROUP:054B
+GET_MIDDLE_FRAME		  Near	 DGROUP:046E
+GET_NUM_FROM_COMMAND		  Near	 DGROUP:0433
 INF_FRAME			  Struct DGROUP:0366 INF_T
-L				  Near	 DGROUP:0430
-MAKE_FILL			  Near	 DGROUP:04B4
+L				  Near	 DGROUP:042C
+MAKE_FILL			  Near	 DGROUP:04B0
 MONALISA			  Word	 DGROUP:036E
-PRINT_ARR			  Near	 DGROUP:04DC
-PRINT_COLUMN			  Near	 DGROUP:03FC
-PRINT_MONA_LISA			  Near	 DGROUP:04E3
-PRINT_WORD_IN_FRAME		  Near	 DGROUP:040B
+PRINT_ARR			  Near	 DGROUP:04D8
+PRINT_COLUMN			  Near	 DGROUP:03F8
+PRINT_MONA_LISA			  Near	 DGROUP:04DF
+PRINT_WORD_IN_FRAME		  Near	 DGROUP:0407
 ROW1				  Byte	 DGROUP:01A6
 ROW10				  Byte	 DGROUP:02A2
 ROW11				  Byte	 DGROUP:02BE
@@ -849,7 +848,7 @@ ROW4				  Byte	 DGROUP:01FA
 ROW5				  Byte	 DGROUP:0216
 ROW6				  Byte	 DGROUP:0232
 ROW7				  Byte	 DGROUP:024E
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 15
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 15
 Symbol Table
 
 
@@ -857,7 +856,7 @@ Symbol Table
 ROW8				  Byte	 DGROUP:026A
 ROW9				  Byte	 DGROUP:0286
 START				  Near	 DGROUP:0100
-STRING				  Near	 DGROUP:03BA
+STRING				  Near	 DGROUP:03B6
 SYMBOL_ARR			  Word	 DGROUP:019E
 
 Macro Name
@@ -878,8 +877,8 @@ Groups & Segments		  Bit Size Align  Combine Class
 
 DGROUP				  Group
   _DATA				  16  0000 Word	  Public  DATA
-  _TEXT				  16  0561 Word	  Public  CODE
-Turbo Assembler	 Version 4.1	    02/20/26 14:47:46	    Page 16
+  _TEXT				  16  055D Word	  Public  CODE
+Turbo Assembler	 Version 4.1	    02/20/26 14:53:35	    Page 16
 Error Summary
 
 

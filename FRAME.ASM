@@ -133,28 +133,28 @@ Start:
 FLAGS db 0	
 Symbol_arr   dw 1F03h, 4E03h, 8B55h, 04C5h
 ; Строка 1: "o8%8888," +20 пробелов
-row1 db 04h,04h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,04h,04h 
+row1 db 20h,20h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 2: "      o88%8888888." +10 пробелов
-row2 db 04h,20h,20h,20h,20h,20h,6Fh,38h,38h,25h,38h,38h,38h,38h,38h,38h,38h,2Eh,20h,20h,20h,20h,20h,20h,20h,20h,04h,04h
+row2 db 20h,20h,20h,20h,20h,20h,6Fh,38h,38h,25h,38h,38h,38h,38h,38h,38h,38h,2Eh,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 3: "     8'-    -:8888b" +10 пробелов
-row3 db 04h,20h,20h,20h,20h,20h,38h,27h,2Dh,20h,20h,20h,20h,2Dh,3Ah,38h,38h,38h,38h,62h,20h,20h,20h,20h,20h,20h,04h,04h
+row3 db 20h,20h,20h,20h,20h,20h,38h,27h,2Dh,20h,20h,20h,20h,2Dh,3Ah,38h,38h,38h,38h,62h,20h,20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 4: "    8'         8888" +10 пробелов
-row4 db 04h,20h,20h,20h,20h,38h,27h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,38h,38h,38h,38h,20h,20h,20h,20h,20h,20h,04h
+row4 db 20h,20h,20h,20h,20h,38h,27h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,38h,38h,38h,38h,20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 5: "   d8.-=. ,==-.:888b" +8 пробелов
-row5 db 04h,20h,20h,64h,38h,2Dh,2Eh,3Dh,20h,2Ch,3Dh,3Dh,2Dh,2Eh,3Ah,38h,38h,38h,62h,20h,20h,20h,20h,20h,20h,20h,20h,20h
+row5 db 20h,20h,20h,64h,38h,2Dh,2Eh,3Dh,20h,2Ch,3Dh,3Dh,2Dh,2Eh,3Ah,38h,38h,38h,62h,20h,20h,20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 6: "   >8 `~` :`~' d8888" +8 пробелов
-row6 db 04h,20h,20h,3Eh,38h,20h,60h,7Eh,60h,20h,3Ah,60h,7Eh,27h,20h,64h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h,20h
+row6 db 20h,20h,20h,3Eh,38h,20h,60h,7Eh,60h,20h,3Ah,60h,7Eh,27h,20h,64h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 7: "   88         ,88888" +9 пробелов
-row7 db 04h,20h,20h,20h,38h,38h,20h,20h,20h,20h,20h,20h,20h,20h,20h,2Ch,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
+row7 db 20h,20h,20h,20h,38h,38h,20h,20h,20h,20h,20h,20h,20h,20h,20h,2Ch,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 8: "   88b. `-~  :'88888" +8 пробелов
-row8 db 04h,20h,20h,20h,38h,38h,62h,2Eh,20h,60h,2Dh,7Eh,20h,20h,3Ah,27h,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
+row8 db 20h,20h,20h,20h,38h,38h,62h,2Eh,20h,60h,2Dh,7Eh,20h,20h,3Ah,27h,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
 
 ; Строка 9: "   888b ~==~ .:88888" +8 пробелов
 row9 db 20h,20h,20h,20h,38h,38h,38h,62h,20h,7Eh,3Dh,3Dh,7Eh,20h,2Eh,3Ah,38h,38h,38h,38h,38h, 20h,20h,20h,20h,20h,20h,20h
@@ -181,7 +181,7 @@ row15 db 2Fh,38h,38h,3Ah,2Eh,5Fh,5Fh,20h,2Ch,20h,20h,20h,20h,20h,20h,20h,5Fh,25h
 row16 db 20h,20h,20h,20h,27h,27h,27h,3Ah,3Ah,3Dh,3Dh,2Eh,2Dh,27h,20h,20h,20h,20h,3Dh,20h,2Dh,2Dh,2Eh,20h,20h,20h,20h,20h
 	Inf_frame INF_T <> 
 
-MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, row15, row16, 0000h
+MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, 0000h
 
 ; Str db 41h, 41h, 41h
 ;=================================================================================================
@@ -484,7 +484,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 	endp
 
 	print_mona_lisa proc
-		DRAW_FRAME 30, 17, 10, 0, 1
+		DRAW_FRAME 30, 16, 10, 0, 1
 
 		mov di, 22 ; (10 + 1) * 2 ; можно подшаманить с отступом
 		add di, 160 ; 4 * 160
