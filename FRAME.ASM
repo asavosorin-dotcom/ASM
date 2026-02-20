@@ -19,6 +19,11 @@ INF_T struc
 	pos_y  dw 3
 INF_T ends
 
+String_t struc
+	string_ptr dw 0
+	string_len dw 0
+String_t ends
+
 DRAW_COL macro height, pos_x, pos_y, symbol
 	mov bx, height
 	mov cx, pos_x
@@ -93,6 +98,7 @@ Start:
 	; Подумать как можно передавать символ для всех рамок
 
 	mov cl, ds:80h
+
 	mov si, 82h
 
 	call get_flag_from_command
@@ -118,20 +124,35 @@ Start:
 ; 
 	and bx, 0ff00h
 	mov dx, bx
-; 
+
 	push cx
 	call make_fill
 	pop cx
-; 
+
+	xor ch, ch 
+
+	; mov cl, ds:80h
+	nop
+	nop
+	nop
+	nop
+
+	call read_strings
+
 	push dx
 	call print_word_in_frame
 	pop dx
+
+	
 
 	mov ah, 4ch
 	int 21h
 ;=================================================================================================
 FLAGS db 0	
 Symbol_arr   dw 1F03h, 4E03h, 8B55h, 04C5h
+
+String_arr String_t 8 dup(<0, 0>)
+
 ; Строка 1: "o8%8888," +20 пробелов
 row1 db 20h,20h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h
 
@@ -232,7 +253,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		pop cx
 		ret 
 
-	draw_string endp
+	endp
 
 	draw_column proc
 		push bp
@@ -252,7 +273,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		shl di, 2
 		add di, bx
 		pop bx
-		;=====================================
+		;========================================
 
 		push ax
 		push cx
@@ -281,14 +302,66 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		ret
 
 
-	draw_column endp
+	endp
 
 ;====================================================================
 ;Start:	
 ;   cx - counter of symbols 
 ;	si - adress of string
+;
+;	bx - counter of string
+; 
+; 	cld
+;Note: "|" end of string
+;Return: no
+;Destr: bx, di, si, ax
+;====================================================================
+
+	read_strings proc
+	push cx
+	xor bx, bx
+
+	@@read:
+		mov String_arr[bx].string_ptr, si
+
+		push es
+		mov ax, ds
+		mov es, ax
+		mov di, si
+		xor ax, ax
+		mov al, '%'
+
+		mov si, cx ; use for count symbol in string
+		repne scasb ; check last symbol
+		sub si, cx
+		dec si
+		mov String_arr[bx].string_len, si
+
+		mov si, di
+		pop es
+
+		add bx, size String_t
+
+		cmp byte ptr [si - 1], 0dh
+		jne @@read
+ 
+	pop cx
+	ret
+
+	endp	
+
+;====================================================================
+;Start:	
+;   ax - address in arrate
+; 	bx - counter of strings
+;   ||||||cx - counter of symbols 
+;	si - adress of string
+;   di - adress in ViMem
+;
+;Notes: dx - count bytes, center of frame
+;
 ;Return: ax - число
-;Destr: cx, di, si, dx
+;Destr: cx, si, dx, bx
 ;====================================================================
 
 	print_word_in_frame proc
@@ -297,37 +370,84 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			mov bp, sp
 			add bp, 4
 
+			xor ax, ax
+
 			push di
 			;xor cx, cx
 			xor di, di  	
 			;mov cl, ds:80h
-; 
+ 
 			cmp cl, 0
 			je @@return
-; 
+
+			call get_middle_frame ; dx - count bytes to center
+
+;========================= half of text =========================
+			shr bx, 2
+			shl bx, 1
+
+		;===== Умножение bx на 160 =======
+			shl bx, 5 
+			push di
+			mov di, bx
+			shl bx, 2
+			add bx, di
+			pop di
+		;=================================
+
+			neg bx
+
+		@@text:
 			dec cl
 			;mov si, 82h 
 			;BEG equ 5 * 160 + 40
-			mov di, cx
+;================================================================
+
+;========================= half of string =======================
+			; mov di, cx
+			push bx 
+			mov bx, ax
+			mov di, [String_arr[bx]].string_len
+			mov si, [String_arr[bx]].string_ptr
+			pop bx
+
 			shr di, 2
-			shl di, 1
+			shl di, 1	
 			neg di
 			sub di, 2
-			call get_middle_frame
+;================================================================
+
 			add di, dx
+			add di, bx
 			;mov di, BEG ;  
+			push ax
 			mov ah, [bp + 1];
-			L:
+
+			@@string:
 				lodsb	
 				stosw
-				loop L
-; 
+				; loop @@string
+				cmp byte ptr ds:[si], 0dh ; end of text
+				je @@return
+				
+				cmp byte ptr ds:[si], '%'
+				jne @@string
+
+
+			pop ax
+
+			; neg 
+			add bx, 160d
+			add ax, 4h
+			jmp @@text
+; можно запустить цикл в котором из середины вычитаться половина длины строки, а после печати добавлять к середине 160 или 320 и по новой
+
 			@@return:
 			pop di
 			; pop cx 
 			pop bp
 			ret
-	endp					
+		endp					
 
 ;====================================================================
 ; Start:  cx - number of symbols
@@ -335,6 +455,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 ; Destr:  cx, si, dx, ax
 ; Return: dx - число. dx = 0, если нет цифры
 ;====================================================================
+
 	get_num_from_command proc
 		xor dx, dx
 
@@ -349,7 +470,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 
 		xor ax, ax
 
-		 @@digit:
+		@@digit:
 			lodsb
 
 			push cx
@@ -410,7 +531,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		shr ax, 1
 		shl ax, 1
 
-		;===== Умножение ax на 80=======
+		;===== Умножение ax на 80=============
 		shl ax, 5
 		push bx
 		mov bx, ax
@@ -501,7 +622,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			add di, 160
 			add bx, 2
 			
-			cmp [bx], 0000h
+			cmp word ptr [bx], 0000h
 			jne @@mona
 
 		ret
