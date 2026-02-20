@@ -104,10 +104,15 @@ Start:
 
 	@@frame:
 	call get_num_from_command
+	test dx, dx
+	je @@without_size
+
 	mov  Inf_frame.length, dx
-; 
+
 	call get_num_from_command
 	mov  Inf_frame.height, dx
+	
+	@@without_size:
 ; 
 	DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
 ; 
@@ -125,7 +130,7 @@ Start:
 	mov ah, 4ch
 	int 21h
 ;=================================================================================================
-FLAGS dw 0	
+FLAGS db 0	
 Symbol_arr   dw 1F03h, 4E03h, 8B55h, 04C5h
 ; Строка 1: "o8%8888," +20 пробелов
 row1 db 04h,04h,20h,20h,20h,20h,20h,20h,6Fh,38h,25h,38h,38h,38h,38h,2Ch,20h,20h,20h,20h,20h,20h,20h,20h,20h,20h,04h,04h 
@@ -359,8 +364,16 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			add dx, ax
 			dec cx
 
+			cmp byte ptr [si], '0'
+			jbe @@end_cicle
+
+			cmp byte ptr [si], '9'
+			jge @@end_cicle
+
 			cmp byte ptr [si], ' '
 			jne @@digit
+
+		@@end_cicle:
 
 		dec cx
 		add si, 1 ; skip_space
