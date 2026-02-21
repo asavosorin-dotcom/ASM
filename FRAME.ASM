@@ -415,10 +415,10 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			mov si, [String_arr[bx]].string_ptr
 			pop bx
 
-			shr di, 2
+			shr di, 1
 			shl di, 1	
 			neg di
-			sub di, 2	
+			; sub di, 2	
 ;================================================================
 
 			add di, dx
