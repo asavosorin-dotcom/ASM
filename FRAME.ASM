@@ -145,7 +145,7 @@ Start:
 
 	
 
-	mov ah, 4ch
+	mov ax, 4c00h
 	int 21h
 ;=================================================================================================
 FLAGS db 0	
@@ -383,8 +383,12 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			call get_middle_frame ; dx - count bytes to center
 
 ;========================= half of text =========================
-			shr bx, 2
-			shl bx, 1
+			shr bx, 4 ; size of string_t
+
+			shr bx, 1
+			; shl bx, 1
+
+			add bx, 1
 
 		;===== Умножение bx на 160 =======
 			shl bx, 5 
@@ -414,7 +418,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			shr di, 2
 			shl di, 1	
 			neg di
-			sub di, 2
+			sub di, 2	
 ;================================================================
 
 			add di, dx
@@ -443,6 +447,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 ; можно запустить цикл в котором из середины вычитаться половина длины строки, а после печати добавлять к середине 160 или 320 и по новой
 
 			@@return:
+			pop ax ;!!!!!!!!!!!!!!!!!!!!!!
 			pop di
 			; pop cx 
 			pop bp
