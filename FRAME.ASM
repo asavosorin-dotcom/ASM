@@ -12,7 +12,7 @@ locals @@
 
 ; надо написать процедуру, которая считывает число из командной строки
 
-INF_T struc 
+INF_T struc
 	length dw 30
 	height dw 7
 	pos_x  dw 10
@@ -30,8 +30,6 @@ DRAW_COL macro height, pos_x, pos_y, symbol
 	mov di, pos_y
 
 	; mov ax, symbol
-	; push ax
-
 	call draw_column
 ENDM
 
@@ -110,7 +108,7 @@ Start:
 
 	@@frame:
 	call get_num_from_command
-	test dx, dx
+	cmp dx, 0
 	je @@without_size
 
 	mov  Inf_frame.length, dx
@@ -139,11 +137,14 @@ Start:
 
 	call read_strings
 
+	cmp String_arr.string_len, 0
+	je @@without_word
+
 	push dx
 	call print_word_in_frame
 	pop dx
 
-	
+	@@without_word:
 
 	mov ax, 4c00h
 	int 21h
@@ -211,9 +212,10 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		push cx
 		push di
 		push bx
+		push ax
 		push bp
 		mov bp, sp
-		add bp, 10
+		add bp, 12
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;
 
@@ -234,20 +236,40 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		add di, cx
 		;add bx, cx
 		
+		shr di, 1 
+		shl di, 1
+
 		push cx
 		xor cx, cx
 		mov word ptr cx, [bp]
 
+		; add di, bx
+		mov ax, bx
+		xor bx, bx
+
 		string:
 			mov word ptr es:[bx + di], cx
-			dec bx
-			dec bx
-			cmp bx, 0
-			jge string
+			inc bx
+			inc bx
+			cmp bx, ax
+
+;========================= time low ===================================================
+			push cx
+			mov cx, 10000
+			@@time:
+				nop
+				nop
+				nop
+				loop @@time
+			pop cx
+;======================================================================================
+
+			jbe string
 
 		pop cx
 
 		pop bp
+		pop ax
 		pop bx
 		pop di
 		pop cx
@@ -285,6 +307,9 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		pop ax
 
 		add di, cx
+
+		shr di, 1 
+		shl di, 1
 
 		push cx
 		mov word ptr cx, [bp]
@@ -372,13 +397,14 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 
 			xor ax, ax
 
+			cmp cl, 0
+			je @@return
+
 			push di
 			;xor cx, cx
 			xor di, di  	
 			;mov cl, ds:80h
  
-			cmp cl, 0
-			je @@return
 
 			call get_middle_frame ; dx - count bytes to center
 
@@ -432,7 +458,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 				stosw
 				; loop @@string
 				cmp byte ptr ds:[si], 0dh ; end of text
-				je @@return
+				je @@start_pop
 				
 				cmp byte ptr ds:[si], '%'
 				jne @@string
@@ -446,10 +472,11 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			jmp @@text
 ; можно запустить цикл в котором из середины вычитаться половина длины строки, а после печати добавлять к середине 160 или 320 и по новой
 
-			@@return:
+			@@start_pop:
 			pop ax ;!!!!!!!!!!!!!!!!!!!!!!
 			pop di
 			; pop cx 
+			@@return:
 			pop bp
 			ret
 		endp					
@@ -491,10 +518,10 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			dec cx
 
 			cmp byte ptr [si], '0'
-			jbe @@end_cicle
+			jb @@end_cicle
 
 			cmp byte ptr [si], '9'
-			jge @@end_cicle
+			jg @@end_cicle
 
 			cmp byte ptr [si], ' '
 			jne @@digit
@@ -503,6 +530,11 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 
 		dec cx
 		add si, 1 ; skip_space
+
+		nop
+		nop
+		nop
+		nop
 
 		@@return:
 		ret
