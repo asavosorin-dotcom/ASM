@@ -272,16 +272,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			inc bx
 			cmp bx, ax
 
-;========================= time low ===================================================
-			push cx
-			mov cx, 10000
-			@@time:
-				nop
-				nop
-				nop
-				loop @@time
-			pop cx
-;======================================================================================
+			call time_low
 
 			jbe string
 
@@ -340,6 +331,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 
 		print_column:
 			mov word ptr es:[bx + di], cx
+			call time_low
 			sub bx, 160
 			;dec bx   
 			cmp bx, 0
@@ -368,6 +360,20 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 ;Return: no
 ;Destr: bx, di, si, ax
 ;====================================================================
+
+	time_low proc
+;========================= time low ===================================================
+			push cx
+			mov cx, 10000
+			@@time:
+				nop
+				nop
+				nop
+				loop @@time
+			pop cx
+			ret
+;======================================================================================
+	endp
 
 	read_strings proc
 	push cx
@@ -762,10 +768,37 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			pop cx
 			dec cx
 			cmp cx, 0
-			je @@end
+			je @@end_inc
 			jmp @@frame_incr
 
-		@@end:
+		@@end_inc:
+
+		mov dx, 0000h
+		mov cx, 2
+
+		@@frame_decr label far
+			push cx
+			push dx
+			DRAW_FRAME Inf_frame_temp.length, Inf_frame_temp.height, Inf_frame_temp.pos_x, Inf_frame_temp.pos_y, 2
+
+			sub Inf_frame_temp.length, 2
+			sub Inf_frame_temp.height, 2
+			inc Inf_frame_temp.pos_x
+			inc Inf_frame_temp.pos_y
+
+			push bx
+			DRAW_FRAME Inf_frame_temp.length, Inf_frame_temp.height, Inf_frame_temp.pos_x, Inf_frame_temp.pos_y, 2
+			pop bx
+
+			pop dx
+			pop cx
+			dec cx
+			cmp cx, 0
+			je @@end_dec
+			jmp @@frame_decr
+
+		@@end_dec:
+
 		pop cx 
 		pop bx
 
