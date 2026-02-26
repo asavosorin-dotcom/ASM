@@ -25,12 +25,19 @@ String_t struc
 String_t ends
 
 DRAW_COL macro height, pos_x, pos_y, symbol
+	pop dx
+	push bx
+	push dx
+	
 	mov bx, height
 	mov cx, pos_x
 	mov di, pos_y
 
 	; mov ax, symbol
 	call draw_column
+	pop dx
+	pop bx
+	push dx
 ENDM
 
 ;===========================================================================
@@ -38,6 +45,10 @@ ENDM
 ;===========================================================================
 ; 9F96
 DRAW_STR macro length, pos_x, pos_y, symbol
+	pop dx
+	push bx
+	push dx
+
 	mov  bx, length
 	mov  cx, pos_x
 	mov  di, pos_y
@@ -46,13 +57,17 @@ DRAW_STR macro length, pos_x, pos_y, symbol
 	; push ax
 
 	call draw_string
+	pop dx
+	pop bx
+	push dx
 ENDM
 	
 DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 		
 	DRAW_STR length, pos_x, pos_y, symbol
-	DRAW_COL height, pos_x, pos_y, symbol
 
+	DRAW_COL height, pos_x, pos_y, symbol
+	
 	; Sum_y = pos_y + height - 1 ; make in func
 ;=====================================================================
 	mov di, pos_y
@@ -68,9 +83,7 @@ DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 	add cx, length
 	dec cx
 ;=====================================================================
-
 	DRAW_COL height, cx, pos_y, symbol
- 
 ENDM
 
 ;очистка экрана
@@ -207,8 +220,8 @@ row15 db 2Fh,38h,38h,3Ah,2Eh,5Fh,5Fh,20h,2Ch,20h,20h,20h,20h,20h,20h,20h,5Fh,25h
 
 ; —трока 16: "    '''::===..-'   =  --." +3 пробела
 row16 db 20h,20h,20h,20h,27h,27h,27h,3Ah,3Ah,3Dh,3Dh,2Eh,2Dh,27h,20h,20h,20h,20h,3Dh,20h,2Dh,2Dh,2Eh,20h,20h,20h,20h,20h
-	Inf_frame INF_T <> 
-
+Inf_frame INF_T <> 
+Inf_frame_temp INF_T <>
 MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, row12, row13, row14, 0000h
 
 ; Str db 41h, 41h, 41h
@@ -284,9 +297,14 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 	endp
 
 	draw_column proc
+		push cx
+		push di
+		push bx
+		push ax
+
 		push bp
 		mov bp, sp
-		add bp, 4 ; пропускаем адрес возврата
+		add bp, 12 ; пропускаем адрес возврата
 
 		;cx pos_x
 		;di pos_y
@@ -329,7 +347,10 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 
 		pop cx
 		pop bp
-
+		pop ax
+		pop bx
+		pop di
+		pop cx
 		ret
 
 
@@ -704,13 +725,47 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 
 		mov dx, bx
 		and dx, 0ff00h
+
+		push ax
+		mov ax, Inf_frame.length
+		mov Inf_frame_temp.length, ax
+
+		mov ax, Inf_frame.height
+		mov Inf_frame_temp.height, ax
+
+		mov ax, Inf_frame.pos_x
+		mov Inf_frame_temp.pos_x, ax
+
+		mov ax, Inf_frame.pos_y
+		mov Inf_frame_temp.pos_y, ax
+		pop ax
 		
 		push bx
 		push cx
 		; mov dx, 4c03h
-		push dx
-		DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
-		pop dx
+		mov cx, 2
+		@@frame_incr label far
+			push cx
+			push dx
+			DRAW_FRAME Inf_frame_temp.length, Inf_frame_temp.height, Inf_frame_temp.pos_x, Inf_frame_temp.pos_y, 2
+
+			add Inf_frame_temp.length, 2
+			add Inf_frame_temp.height, 2
+			dec Inf_frame_temp.pos_x
+			dec Inf_frame_temp.pos_y
+
+			push bx
+			DRAW_FRAME Inf_frame_temp.length, Inf_frame_temp.height, Inf_frame_temp.pos_x, Inf_frame_temp.pos_y, 2
+			pop bx
+
+			pop dx
+			pop cx
+			dec cx
+			cmp cx, 0
+			je @@end
+			jmp @@frame_incr
+
+		@@end:
 		pop cx 
 		pop bx
 
