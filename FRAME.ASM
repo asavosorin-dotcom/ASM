@@ -24,18 +24,25 @@ String_t struc
 	string_len dw 0
 String_t ends
 
+;Паскальный тип
 DRAW_COL macro height, pos_x, pos_y, symbol
 	pop dx
 	push bx
+
+	mov cx, pos_x
+	mov di, pos_y
+	push cx
+	push di
+
 	push dx
 	
 	mov bx, height
-	mov cx, pos_x
-	mov di, pos_y
+	; mov cx, pos_x
+	; mov di, pos_y
 
 	; mov ax, symbol
 	call draw_column
-	pop dx
+	; pop dx
 	pop bx
 	push dx
 ENDM
@@ -288,14 +295,15 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 	endp
 
 	draw_column proc
-		push cx
-		push di
 		push bx
 		push ax
 
 		push bp
 		mov bp, sp
-		add bp, 12 ; пропускаем адрес возврата
+		add bp, 8 ; пропускаем адрес возврата
+
+		mov cx, [bp + 4]
+		mov di, [bp + 2]
 
 		;cx pos_x
 		;di pos_y
@@ -338,13 +346,14 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			jge print_column
 
 		pop cx
+
+		mov dx, [bp]
+
 		pop bp
 		pop ax
-		pop bx
-		pop di
-		pop cx
-		ret
-
+		pop bx	
+		
+		ret 6
 
 	endp
 
