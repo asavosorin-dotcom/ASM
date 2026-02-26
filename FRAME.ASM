@@ -120,16 +120,14 @@ Start:
 	pop bx
 	pop cx
 ; 
-
 	push bx
 	and bx, 0ff00h
 	mov dx, bx
 	push cx
 	call make_fill
 	pop cx
-	pop bx
+	; pop bx
 
-	call frame_fluct
 
 	xor ch, ch 
 
@@ -138,6 +136,7 @@ Start:
 	nop
 	nop
 	nop
+
 
 	call read_strings
 
@@ -148,7 +147,10 @@ Start:
 	call print_word_in_frame
 	pop dx
 
+	
 	@@without_word:
+	pop bx
+	call frame_fluct
 
 	mov ax, 4c00h
 	int 21h
