@@ -49,16 +49,7 @@ DRAW_STR macro length, pos_x, pos_y, symbol
 ENDM
 	
 DRAW_FRAME macro length, height, pos_x, pos_y, symbol
-	
-	call get_num_from_command
-
-	shl dx, 1 ; arr of words
-	lea bx, Symbol_arr
-	add bx, dx
-
-	push cx
-	push [bx]
-	
+		
 	DRAW_STR length, pos_x, pos_y, symbol
 	DRAW_COL height, pos_x, pos_y, symbol
 
@@ -79,9 +70,6 @@ DRAW_FRAME macro length, height, pos_x, pos_y, symbol
 ;=====================================================================
 
 	DRAW_COL height, cx, pos_y, symbol
-
-	pop bx
-	pop cx
  
 ENDM
 
@@ -117,15 +105,31 @@ Start:
 	mov  Inf_frame.height, dx
 	
 	@@without_size:
-; 
+;
+	call get_num_from_command
+
+	shl dx, 1 ; arr of words
+	lea bx, Symbol_arr
+	add bx, dx
+
+	push cx
+	push [bx]
+
 	DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
+
+	pop bx
+	pop cx
 ; 
+
+	push bx
 	and bx, 0ff00h
 	mov dx, bx
-
 	push cx
 	call make_fill
 	pop cx
+	pop bx
+
+	call frame_fluct
 
 	xor ch, ch 
 
@@ -684,6 +688,31 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		; jmp @@exit
 
 		@@exit:
+		ret
+	endp
+;=======================================================================
+; Start: в bx код символа
+; Destr: dx
+; Notes: dx - код фона
+;=======================================================================
+
+	frame_fluct proc
+		push bp
+		mov bp, sp
+
+		mov dx, bx
+		and dx, 0ff00h
+		
+		push bx
+		push cx
+		; mov dx, 4c03h
+		push dx
+		DRAW_FRAME Inf_frame.length, Inf_frame.height , Inf_frame.pos_x, Inf_frame.pos_y, 2
+		pop dx
+		pop cx 
+		pop bx
+
+		pop bp
 		ret
 	endp
 
