@@ -24,7 +24,7 @@ String_t struc
 	string_len dw 0
 String_t ends
 
-;Паскальный тип
+; pascal
 DRAW_COL macro height, pos_x, pos_y, symbol
 	pop dx
 	push bx
@@ -50,7 +50,8 @@ ENDM
 ;===========================================================================
 ;DESTR: ax, bx, cx, di
 ;===========================================================================
-; 9F96
+
+; cdecl
 DRAW_STR macro length, pos_x, pos_y, symbol
 	pop dx
 	push bx
@@ -62,8 +63,16 @@ DRAW_STR macro length, pos_x, pos_y, symbol
 
 	; mov  ax, symbol
 	; push ax
+	push di
+	push cx
+	push dx
 
 	call draw_string
+
+	pop dx
+	pop cx 
+	pop di
+
 	pop dx
 	pop bx
 	push dx
@@ -240,8 +249,13 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 		push bx
 		push ax
 		push bp
+
+
 		mov bp, sp
 		add bp, 12
+
+		mov cx, [bp + 2]
+		mov di, [bp + 4]
 		;mov word ptr es: [bx+160*4l + 80], (4e03h or 8000h)	
 		;mov bx, 80 ;
 
@@ -636,25 +650,35 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 
 	make_fill proc
 		push bp
+		push dx
 		mov bp, sp
 
 		mov ax, Inf_frame.height
 		sub ax, 2
 
-		push bx
+		mov dx, bx
 
 		mov bx, Inf_frame.length
 		sub bx, 2
+		; push bx
 
 		mov cx, Inf_frame.pos_x
 		inc cx
+		; push cx
 
 		mov di, Inf_frame.pos_y
 		inc di 
+		push di
 
 		@@print_string:
-
+			push di
+			push cx
+			push dx
 			call draw_string
+			pop dx
+			pop cx 
+			pop di
+
 			inc di 
 
 			dec ax
@@ -662,6 +686,7 @@ MonaLisa dw row1, row2, row3, row4, row5, row6, row7, row8, row9, row10, row11, 
 			jne @@print_string
 
 		pop bx
+		pop dx
 		pop bp
 
 		ret
